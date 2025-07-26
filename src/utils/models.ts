@@ -28,3 +28,33 @@ export const ProjectModel: K8sModel = {
   // t('public~Projects')
   labelPluralKey: 'public~Projects',
 };
+
+export const BrowserModel: K8sModel = {
+  apiVersion: 'v1alpha1',
+  apiGroup: 'core.kubebrowser.io',
+  label: 'Browser',
+  // t('console-plugin-name~Browser')
+  labelKey: 'console-plugin-name~Browser',
+  plural: 'browsers',
+  abbr: 'BR',
+  kind: 'Browser',
+  id: 'browser',
+  labelPlural: 'Browsers',
+  // t('console-plugin-name~Projects')
+  labelPluralKey: 'console-plugin-name~Browsers',
+};
+
+export const PodModel: K8sModel = {
+  apiVersion: 'v1',
+  label: 'Pod',
+  // t('public~Pod')
+  labelKey: 'public~Pod',
+  plural: 'pods',
+  abbr: 'P',
+  namespaced: true,
+  kind: 'Pod',
+  id: 'pod',
+  labelPlural: 'Pods',
+  // t('public~Pods')
+  labelPluralKey: 'public~Pods',
+};

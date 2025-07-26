@@ -7,11 +7,14 @@ import {
   ToolbarGroup,
 } from '@patternfly/react-core';
 import { NamespaceSelector } from './NamespaceSelector';
+import { BrowserSelector } from './BrowserSelector';
 
 export const SelectorToolbar: React.FC<{
   namespace: string;
   onNamespaceChange: (newNamespace: string) => void;
-}> = ({ namespace, onNamespaceChange }) => {
+  browser: string;
+  onBrowserChange: (newBrowser: string) => void;
+}> = ({ namespace, onNamespaceChange, browser, onBrowserChange }) => {
   return (
     <Toolbar>
       <ToolbarContent>
@@ -19,6 +22,13 @@ export const SelectorToolbar: React.FC<{
           <Breadcrumb>
             <BreadcrumbItem isDropdown>
               <NamespaceSelector value={namespace} onValueChange={onNamespaceChange} />
+            </BreadcrumbItem>
+            <BreadcrumbItem isDropdown>
+              <BrowserSelector
+                namespace={namespace}
+                value={browser}
+                onValueChange={onBrowserChange}
+              />
             </BreadcrumbItem>
           </Breadcrumb>
         </ToolbarGroup>

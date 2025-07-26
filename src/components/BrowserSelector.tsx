@@ -11,55 +11,58 @@ import {
   MenuToggleElement,
   SelectOption,
   SelectList,
+  MenuFooter,
+  Button,
 } from '@patternfly/react-core';
 
-import { NamespaceIcon } from './NamespaceIcon';
 import { useMemo } from 'react';
-import useNamespaces from '../hooks/useNamespaces';
+import useBrowsers from '../hooks/useBrowsers';
+import { BrowserIcon } from './BrowserIcon';
 
-export const NamespaceSelector: React.FC<{
+export const BrowserSelector: React.FC<{
+  namespace: string;
   value: string;
   onValueChange: (newValue: string) => void;
-}> = ({ value, onValueChange }) => {
+}> = ({ namespace, value, onValueChange }) => {
   const [input, setInput] = React.useState('');
 
   const { isOpen, toggleSelect } = useSelectToggle();
-  const { namespaces, isLoading: namespacesLoading } = useNamespaces();
+  const { browsers, isLoading: browsersLoading } = useBrowsers(namespace);
 
   const handleTextInputChange = (value: string) => {
     setInput(value);
   };
 
-  const onNamespaceSelect = (_?: React.MouseEvent, itemId?: string | number) => {
+  const onBrowserSelect = (_?: React.MouseEvent, itemId?: string | number) => {
     if (!itemId) return;
     toggleSelect(false);
     onValueChange(itemId as string);
   };
 
   const filteredDeploymentSelectMenuItems = useMemo(() => {
-    const namespaceSelectMenuItems = namespaces
-      .filter((namespace) => namespace.toLowerCase().includes(input.toString().toLowerCase()))
-      .map((namespace) => {
+    const browserSelectMenuItems = browsers
+      .filter((browser) => browser.toLowerCase().includes(input.toString().toLowerCase()))
+      .map((browser) => {
         return (
-          <SelectOption key={namespace} itemId={namespace} isSelected={value === namespace}>
+          <SelectOption key={browser} itemId={browser} isSelected={value === browser}>
             <span>
-              <NamespaceIcon />
-              <span className="pf-v5-u-mx-xs" data-testid="namespace-name">
-                {namespace}
+              <BrowserIcon />
+              <span className="pf-v5-u-mx-xs" data-testid="browser-name">
+                {browser}
               </span>
             </span>
           </SelectOption>
         );
       });
 
-    return namespaceSelectMenuItems;
-  }, [namespaces, input]);
+    return browserSelectMenuItems;
+  }, [browsers, input]);
 
   const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
     <MenuToggle
       ref={toggleRef}
       onClick={() => toggleSelect(!isOpen)}
-      isDisabled={namespacesLoading}
+      isDisabled={browsersLoading}
       isExpanded={isOpen}
       style={
         {
@@ -69,11 +72,11 @@ export const NamespaceSelector: React.FC<{
     >
       <Flex alignSelf={{ default: 'alignSelfCenter' }} flexWrap={{ default: 'nowrap' }}>
         <FlexItem spacer={{ default: 'spacerSm' }} alignSelf={{ default: 'alignSelfCenter' }}>
-          <NamespaceIcon />
+          <BrowserIcon />
         </FlexItem>
         <FlexItem spacer={{ default: 'spacerSm' }}>
           <span style={{ position: 'relative', top: '1px', opacity: !value ? '0.5' : undefined }}>
-            {value || (namespacesLoading ? 'Loading Namespaces' : 'Select Namespace')}
+            {value || (browsersLoading ? 'Loading Browsers' : 'Select Browser')}
           </span>
         </FlexItem>
       </Flex>
@@ -85,7 +88,7 @@ export const NamespaceSelector: React.FC<{
       id="option-variations-select"
       isOpen={isOpen}
       selected={value}
-      onSelect={onNamespaceSelect}
+      onSelect={onBrowserSelect}
       onOpenChange={(isOpen) => toggleSelect(isOpen)}
       toggle={toggle}
       shouldFocusToggleOnSelect
@@ -95,14 +98,17 @@ export const NamespaceSelector: React.FC<{
         <MenuSearchInput>
           <SearchInput
             value={input}
-            aria-label="Filter namespaces"
+            aria-label="Filter browser"
             type="search"
-            placeholder="Filter namespaces..."
+            placeholder="Filter browsers..."
             onChange={(_event, value) => handleTextInputChange(value)}
           />
         </MenuSearchInput>
       </MenuSearch>
       <SelectList>{filteredDeploymentSelectMenuItems}</SelectList>
+      <MenuFooter>
+        <Button variant="secondary">New Browser</Button>
+      </MenuFooter>
     </Select>
   );
 };
