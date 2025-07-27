@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 import { Drawer, DrawerContent, DrawerContentBody, PageSection } from '@patternfly/react-core';
-import { SelectorToolbar } from '../components/SelectorToolbar';
+import { BrowserToolbar } from '../components/BrowserToolbar';
 import { useParams, useNavigate } from 'react-router-dom-v5-compat';
 import { K8sBrowser } from '../types/browser';
 import { NoBrowserState } from '../components/NoBrowserState';
 import { BrowserContent } from '../components/BrowserContent';
 import { BrowserDetailsPanel } from '../components/BrowserDetailsPanel';
+import { BrowserControlToolbar } from '../components/BrowserControlToolbar';
 
 export default function BrowsersPage() {
   const navigate = useNavigate();
@@ -36,8 +37,8 @@ export default function BrowsersPage() {
 
   return (
     <Fragment>
-      <PageSection style={{ paddingBottom: 0 }}>
-        <SelectorToolbar
+      <PageSection style={{ padding: 0 }}>
+        <BrowserToolbar
           namespace={namespace}
           onNamespaceChange={onNamespaceChange}
           browser={browser}
@@ -45,9 +46,8 @@ export default function BrowsersPage() {
           toggleBrowserDrawer={toggleBrowserDrawer}
         />
       </PageSection>
-      <hr style={{ borderColor: '#0000002d' }} />
       {!browser ? (
-        <PageSection isFilled style={{ paddingTop: 0 }} variant="secondary">
+        <PageSection isFilled style={{ paddingTop: 0 }} variant="secondary" hasBodyWrapper={false}>
           <NoBrowserState />
         </PageSection>
       ) : (
@@ -64,6 +64,21 @@ export default function BrowsersPage() {
             >
               <DrawerContentBody>
                 <BrowserContent browser={browser} />
+                <div
+                  style={{
+                    padding: 0,
+                    position: 'absolute',
+                    // bottom: 0,
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    // width: 'max-content',
+                    // marginLeft: 'auto',
+                    // marginRight: 'auto',
+                  }}
+                >
+                  <BrowserControlToolbar browser={browser} />
+                </div>
               </DrawerContentBody>
             </DrawerContent>
           </Drawer>

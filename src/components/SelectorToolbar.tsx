@@ -1,15 +1,15 @@
-import * as React from 'react';
 import {
-  Breadcrumb,
-  BreadcrumbItem,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
+  Breadcrumb,
+  BreadcrumbItem,
 } from '@patternfly/react-core';
-import { NamespaceSelector } from './NamespaceSelector';
-import { BrowserSelector } from './BrowserSelector';
-import { BrowserActions } from './BrowserActions';
+import * as React from 'react';
 import { K8sBrowser } from '../types/browser';
+import { BrowserActions } from './BrowserActions';
+import { BrowserSelector } from './BrowserSelector';
+import { NamespaceSelector } from './NamespaceSelector';
 
 export const SelectorToolbar: React.FC<{
   namespace: string;
@@ -19,7 +19,7 @@ export const SelectorToolbar: React.FC<{
   toggleBrowserDrawer: () => void;
 }> = ({ namespace, onNamespaceChange, browser, onBrowserChange, toggleBrowserDrawer }) => {
   return (
-    <Toolbar>
+    <Toolbar style={{ padding: 16 }}>
       <ToolbarContent alignItems="center">
         <ToolbarGroup>
           <Breadcrumb>

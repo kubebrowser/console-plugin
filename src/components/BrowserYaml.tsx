@@ -21,7 +21,7 @@ export const BrowserYaml: FC<{ browser: K8sBrowser }> = ({ browser }) => {
 
   return (
     <CodeBlock
-      style={{ maxHeight: 450, overflowY: 'scroll', marginTop: 10 }}
+      style={{ maxHeight: 400, overflowY: 'scroll', marginTop: 10 }}
       actions={
         <CodeBlockAction>
           <ClipboardCopyButton

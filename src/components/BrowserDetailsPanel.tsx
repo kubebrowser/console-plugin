@@ -41,9 +41,17 @@ export const BrowserDetailsPanel: FC<{
         </DrawerActions>
       </DrawerHead>
       <DrawerPanelDescription>
-        <Flex flexWrap={{ default: 'nowrap' }} alignItems={{ default: 'alignItemsCenter' }}>
+        <Flex
+          flexWrap={{ default: 'nowrap' }}
+          alignItems={{ default: 'alignItemsCenter' }}
+          justifyContent={{ default: 'justifyContentSpaceBetween' }}
+        >
           <FlexItem>
-            <Flex alignSelf={{ default: 'alignSelfCenter' }} flexWrap={{ default: 'nowrap' }}>
+            <Flex
+              alignSelf={{ default: 'alignSelfCenter' }}
+              alignItems={{ default: 'alignItemsCenter' }}
+              flexWrap={{ default: 'nowrap' }}
+            >
               <FlexItem spacer={{ default: 'spacerSm' }} alignSelf={{ default: 'alignSelfCenter' }}>
                 <BrowserIcon style={{ fontSize: 20 }} />
               </FlexItem>
