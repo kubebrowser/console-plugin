@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Fragment, useState } from 'react';
 import { PageSection } from '@patternfly/react-core';
-import { SelectorToolbar } from '../components/SelectorToolbar';
+import { BrowserToolbar } from '../components/BrowserToolbar';
 import { useParams, useNavigate } from 'react-router-dom-v5-compat';
 
 export default function BrowsersPage() {
@@ -23,7 +23,7 @@ export default function BrowsersPage() {
   return (
     <Fragment>
       <PageSection>
-        <SelectorToolbar
+        <BrowserToolbar
           namespace={namespace}
           onNamespaceChange={onNamespaceChange}
           browser={browser}

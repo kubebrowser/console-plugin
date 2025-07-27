@@ -1,10 +1,10 @@
-import { PodModel } from '../utils/models';
+import { BrowserModel } from '../utils/models';
 import { useK8sWatchResource, K8sResourceKind } from '@openshift-console/dynamic-plugin-sdk';
 
 function useBrowsers(namespace: string) {
   const [options, optionsLoaded] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,
-    kind: PodModel.kind,
+    kind: BrowserModel.kind,
     optional: true,
     namespace,
   });

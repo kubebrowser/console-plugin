@@ -18,6 +18,8 @@ import {
 import { useMemo } from 'react';
 import useBrowsers from '../hooks/useBrowsers';
 import { BrowserIcon } from './BrowserIcon';
+import { useModal } from '@openshift-console/dynamic-plugin-sdk';
+import { CreateBrowserModal } from './CreateBrowserModal';
 
 export const BrowserSelector: React.FC<{
   namespace: string;
@@ -28,7 +30,12 @@ export const BrowserSelector: React.FC<{
 
   const { isOpen, toggleSelect } = useSelectToggle();
   const { browsers, isLoading: browsersLoading } = useBrowsers(namespace);
+  const launchModal = useModal();
 
+  function launchCreateBrowser() {
+    toggleSelect(false);
+    launchModal(CreateBrowserModal, {});
+  }
   const handleTextInputChange = (value: string) => {
     setInput(value);
   };
@@ -107,7 +114,9 @@ export const BrowserSelector: React.FC<{
       </MenuSearch>
       <SelectList>{filteredDeploymentSelectMenuItems}</SelectList>
       <MenuFooter>
-        <Button variant="secondary">New Browser</Button>
+        <Button variant="secondary" onClick={launchCreateBrowser}>
+          New Browser
+        </Button>
       </MenuFooter>
     </Select>
   );

@@ -8,8 +8,9 @@ import {
 } from '@patternfly/react-core';
 import { NamespaceSelector } from './NamespaceSelector';
 import { BrowserSelector } from './BrowserSelector';
+import { BrowserActions } from './BrowserActions';
 
-export const SelectorToolbar: React.FC<{
+export const BrowserToolbar: React.FC<{
   namespace: string;
   onNamespaceChange: (newNamespace: string) => void;
   browser: string;
@@ -31,6 +32,9 @@ export const SelectorToolbar: React.FC<{
               />
             </BreadcrumbItem>
           </Breadcrumb>
+        </ToolbarGroup>
+        <ToolbarGroup align={{ default: 'alignEnd' }}>
+          <BrowserActions />
         </ToolbarGroup>
       </ToolbarContent>
     </Toolbar>
