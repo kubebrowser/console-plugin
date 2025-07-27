@@ -6,7 +6,7 @@ export const browserBadgeColor = 'var(--pf-v5-global--palette--light-blue-400)';
 
 export function BrowserIcon(props: BadgeProps) {
   return (
-    <Badge {...props} style={{ backgroundColor: browserBadgeColor }}>
+    <Badge {...props} style={{ backgroundColor: browserBadgeColor, ...props.style }}>
       {browserBadgeText}
     </Badge>
   );

@@ -9,16 +9,18 @@ import {
 import { NamespaceSelector } from './NamespaceSelector';
 import { BrowserSelector } from './BrowserSelector';
 import { BrowserActions } from './BrowserActions';
+import { K8sBrowser } from '../types/browser';
 
-export const BrowserToolbar: React.FC<{
+export const SelectorToolbar: React.FC<{
   namespace: string;
   onNamespaceChange: (newNamespace: string) => void;
-  browser: string;
-  onBrowserChange: (newBrowser: string) => void;
-}> = ({ namespace, onNamespaceChange, browser, onBrowserChange }) => {
+  browser: K8sBrowser;
+  onBrowserChange: (newBrowser: K8sBrowser) => void;
+  toggleBrowserDrawer: () => void;
+}> = ({ namespace, onNamespaceChange, browser, onBrowserChange, toggleBrowserDrawer }) => {
   return (
     <Toolbar>
-      <ToolbarContent>
+      <ToolbarContent alignItems="center">
         <ToolbarGroup>
           <Breadcrumb>
             <BreadcrumbItem isDropdown>
@@ -27,14 +29,20 @@ export const BrowserToolbar: React.FC<{
             <BreadcrumbItem isDropdown>
               <BrowserSelector
                 namespace={namespace}
-                value={browser}
+                value={browser?.metadata?.name}
                 onValueChange={onBrowserChange}
               />
             </BreadcrumbItem>
           </Breadcrumb>
         </ToolbarGroup>
         <ToolbarGroup align={{ default: 'alignEnd' }}>
-          <BrowserActions />
+          <BrowserActions
+            browserName={browser?.metadata?.name}
+            browserNamespace={browser?.metadata?.namespace}
+            specStarted={browser?.spec?.started}
+            statusDeploymentStatus={browser?.status?.deploymentStatus}
+            toggleBrowserDrawer={toggleBrowserDrawer}
+          />
         </ToolbarGroup>
       </ToolbarContent>
     </Toolbar>

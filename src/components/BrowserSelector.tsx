@@ -20,11 +20,13 @@ import useBrowsers from '../hooks/useBrowsers';
 import { BrowserIcon } from './BrowserIcon';
 import { useModal } from '@openshift-console/dynamic-plugin-sdk';
 import { CreateBrowserModal } from './CreateBrowserModal';
+import { K8sBrowser } from 'src/types/browser';
+import { BrowserStatusIndicator } from './BrowserStatusIcon';
 
 export const BrowserSelector: React.FC<{
   namespace: string;
   value: string;
-  onValueChange: (newValue: string) => void;
+  onValueChange: (newValue: K8sBrowser) => void;
 }> = ({ namespace, value, onValueChange }) => {
   const [input, setInput] = React.useState('');
 
@@ -43,20 +45,25 @@ export const BrowserSelector: React.FC<{
   const onBrowserSelect = (_?: React.MouseEvent, itemId?: string | number) => {
     if (!itemId) return;
     toggleSelect(false);
-    onValueChange(itemId as string);
+    onValueChange(browsers.find((br) => br.metadata.name === itemId));
   };
 
   const filteredDeploymentSelectMenuItems = useMemo(() => {
     const browserSelectMenuItems = browsers
-      .filter((browser) => browser.toLowerCase().includes(input.toString().toLowerCase()))
+      .filter((browser) =>
+        browser.metadata.name.toLowerCase().includes(input.toString().toLowerCase()),
+      )
       .map((browser) => {
+        const itemId = browser.metadata.name;
+        const status = browser.status.deploymentStatus;
         return (
-          <SelectOption key={browser} itemId={browser} isSelected={value === browser}>
+          <SelectOption key={itemId} itemId={itemId} isSelected={value === itemId}>
             <span>
               <BrowserIcon />
               <span className="pf-v5-u-mx-xs" data-testid="browser-name">
-                {browser}
+                {itemId}
               </span>
+              <BrowserStatusIndicator status={status} />
             </span>
           </SelectOption>
         );
@@ -86,6 +93,13 @@ export const BrowserSelector: React.FC<{
             {value || (browsersLoading ? 'Loading Browsers' : 'Select Browser')}
           </span>
         </FlexItem>
+        {value && (
+          <FlexItem spacer={{ default: 'spacerSm' }} alignSelf={{ default: 'alignSelfCenter' }}>
+            <BrowserStatusIndicator
+              status={browsers.find((br) => br.metadata.name === value)?.status.deploymentStatus}
+            />
+          </FlexItem>
+        )}
       </Flex>
     </MenuToggle>
   );
