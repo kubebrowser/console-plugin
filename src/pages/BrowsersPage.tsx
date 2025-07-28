@@ -6,7 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom-v5-compat';
 import { K8sBrowser } from '../types/browser';
 import { NoBrowserState } from '../components/NoBrowserState';
 import { BrowserContent } from '../components/BrowserContent';
-import { BrowserDetailsPanel } from '../components/BrowserDetailsPanel';
+import { BrowserPanel } from '../components/BrowserPanel';
 import { BrowserControlToolbar } from '../components/BrowserControlToolbar';
 
 export default function BrowsersPage() {
@@ -55,7 +55,7 @@ export default function BrowsersPage() {
           <Drawer isExpanded={detailsDrawerExpanded}>
             <DrawerContent
               panelContent={
-                <BrowserDetailsPanel
+                <BrowserPanel
                   browser={browser}
                   onClose={onDetailsDrawerClose}
                   onBrowserDelete={onBrowserDelete}

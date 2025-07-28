@@ -26,10 +26,6 @@ export const BrowserActionMenu: React.FunctionComponent<{ onDelete: () => void }
     setIsOpen(false);
   };
 
-  function onPromptDelete() {
-    onDelete();
-  }
-
   return (
     <Dropdown
       isOpen={isOpen}
@@ -44,7 +40,7 @@ export const BrowserActionMenu: React.FunctionComponent<{ onDelete: () => void }
       shouldFocusToggleOnSelect
     >
       <DropdownList>
-        <DropdownItem isDanger onClick={onPromptDelete}>
+        <DropdownItem isDanger onClick={onDelete}>
           Delete browser
         </DropdownItem>
       </DropdownList>

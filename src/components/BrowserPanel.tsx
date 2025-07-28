@@ -19,7 +19,7 @@ import { BrowserActionMenu } from './BrowserActionMenu';
 import { BrowserIcon } from './BrowserIcon';
 import { BrowserYaml } from './BrowserYaml';
 
-export const BrowserDetailsPanel: FC<{
+export const BrowserPanel: FC<{
   browser: K8sBrowser;
   onClose: () => void;
   onBrowserDelete: () => void;
@@ -32,6 +32,8 @@ export const BrowserDetailsPanel: FC<{
   ) => {
     setActiveTabKey(tabIndex);
   };
+
+  // function handleDelete() {}
 
   return (
     <DrawerPanelContent isResizable>
