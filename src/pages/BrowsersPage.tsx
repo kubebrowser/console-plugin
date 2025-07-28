@@ -35,6 +35,8 @@ export default function BrowsersPage() {
     setDetailsDrawerExpanded(false);
   }
 
+  console.log('rerendered');
+
   return (
     <Fragment>
       <PageSection style={{ padding: 0 }}>

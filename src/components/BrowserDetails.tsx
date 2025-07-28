@@ -12,15 +12,34 @@ import * as React from 'react';
 import { FC } from 'react';
 import { K8sBrowser } from '../types/browser';
 import { BrowserStatusIndicator } from './BrowserStatusIcon';
-import { ResourceLink, Timestamp } from '@openshift-console/dynamic-plugin-sdk';
+import { k8sPatch, ResourceLink, Timestamp } from '@openshift-console/dynamic-plugin-sdk';
 import { deploymentGVK, namespaceGVK } from '../utils/gvk';
+import { BrowserModel } from '../utils/models';
 
 export const BrowserDetails: FC<{ browser: K8sBrowser }> = ({ browser }) => {
   const [isLoading, setLoading] = React.useState(false);
-  function handleStartedChange(_e, checked: boolean) {
+  async function handleStartedChange(_e, checked: boolean) {
     if (isLoading) return;
     setLoading(true);
-    console.log(browser.spec.started);
+    try {
+      await k8sPatch({
+        data: [
+          {
+            op: 'replace',
+            path: '/spec/started',
+            value: checked,
+          },
+        ],
+        model: BrowserModel,
+        resource: {
+          apiVersion: BrowserModel.apiGroup + '/' + BrowserModel.apiVersion,
+          kind: BrowserModel.kind,
+          metadata: { name: browser.metadata.name, namespace: browser.metadata.namespace },
+        },
+      });
+    } catch (err) {
+      console.log('Failed to edit browser ', err);
+    }
     // update resource;
     setLoading(false);
   }
@@ -75,17 +94,17 @@ export const BrowserDetails: FC<{ browser: K8sBrowser }> = ({ browser }) => {
         <DescriptionListGroup>
           <DescriptionListTerm>Status</DescriptionListTerm>
           <DescriptionListDescription>
-            {browser.status.deploymentStatus ? (
+            {browser.status?.deploymentStatus ? (
               <Flex alignSelf={{ default: 'alignSelfCenter' }} flexWrap={{ default: 'nowrap' }}>
                 <FlexItem
                   spacer={{ default: 'spacerSm' }}
                   alignSelf={{ default: 'alignSelfCenter' }}
                 >
-                  <BrowserStatusIndicator status={browser.status.deploymentStatus} />
+                  <BrowserStatusIndicator status={browser.status?.deploymentStatus} />
                 </FlexItem>
                 <FlexItem spacer={{ default: 'spacerSm' }}>
                   <span style={{ position: 'relative', top: '1px' }}>
-                    {browser.status.deploymentStatus}
+                    {browser.status?.deploymentStatus}
                   </span>
                 </FlexItem>
               </Flex>

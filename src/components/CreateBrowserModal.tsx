@@ -15,12 +15,13 @@ import {
   TextInput,
 } from '@patternfly/react-core';
 import { useTranslation } from 'react-i18next';
-import { k8sCreate } from '@openshift-console/dynamic-plugin-sdk';
 import { BrowserModel } from '../utils/models';
+import { k8sCreate, useActiveNamespace } from '@openshift-console/dynamic-plugin-sdk';
 
 export const CreateBrowserModal: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
   const { t } = useTranslation();
   const [name, setName] = React.useState<string>('');
+  const [namespace] = useActiveNamespace();
   const [started, setStarted] = React.useState<boolean>(false);
   const [inProgress, setInProgress] = React.useState<boolean>(false);
   const [errorMessage, setErrorMessage] = React.useState('');
@@ -49,8 +50,11 @@ export const CreateBrowserModal: React.FC<{ closeModal: () => void }> = ({ close
 
   const createBrowser = React.useCallback(async () => {
     const data = {
+      kind: BrowserModel.kind,
+      apiVersion: BrowserModel.apiGroup + '/' + BrowserModel.apiVersion,
       metadata: {
         name,
+        namespace,
       },
       spec: {
         started,

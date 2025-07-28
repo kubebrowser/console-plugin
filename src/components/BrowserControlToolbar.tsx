@@ -14,7 +14,7 @@ import { K8sBrowser } from 'src/types/browser';
 
 export const BrowserControlToolbar: React.FC<{ browser: K8sBrowser }> = ({ browser }) => {
   const [isHovered, setHovered] = React.useState(false);
-  const isDisabled = browser.status.deploymentStatus !== 'Ready';
+  const isDisabled = browser.status?.deploymentStatus !== 'Ready';
 
   function onMouseEnter() {
     setHovered(true);

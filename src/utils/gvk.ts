@@ -6,7 +6,7 @@ export const deploymentGVK: K8sGroupVersionKind = {
   kind: 'Deployment',
 };
 export const browserGVK: K8sGroupVersionKind = {
-  group: 'core',
+  group: 'core.kubebrowser.io',
   version: 'v1alpha1',
   kind: 'Browser',
 };

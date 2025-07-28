@@ -42,6 +42,7 @@ export const BrowserModel: K8sModel = {
   labelPlural: 'Browsers',
   // t('console-plugin-name~Projects')
   labelPluralKey: 'console-plugin-name~Browsers',
+  crd: true,
 };
 
 export const PodModel: K8sModel = {

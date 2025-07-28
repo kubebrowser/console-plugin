@@ -5,11 +5,11 @@ import { BrowserProgressingState } from './BrowserProgressingState';
 import { BrowserUnknownState } from './BrowserUnknownState';
 
 export const BrowserContent: React.FC<{ browser: K8sBrowser }> = ({ browser }) => {
-  if (browser.status.deploymentStatus === 'Progressing') {
+  if (browser.status?.deploymentStatus === 'Progressing') {
     return <BrowserProgressingState specStarted={browser.spec.started} />;
   }
 
-  if (browser.status.deploymentStatus === 'Ready' && browser.spec.started) {
+  if (browser.status?.deploymentStatus === 'Ready' && browser.spec.started) {
     return (
       <div>
         <p>show browser</p>

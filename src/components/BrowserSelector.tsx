@@ -26,20 +26,26 @@ import { BrowserStatusIndicator } from './BrowserStatusIcon';
 export const BrowserSelector: React.FC<{
   namespace: string;
   value: string;
+  resourceVersion?: string;
   onValueChange: (newValue: K8sBrowser) => void;
-}> = ({ namespace, value, onValueChange }) => {
+}> = ({ namespace, value, resourceVersion, onValueChange }) => {
   const [input, setInput] = React.useState('');
 
   const { isOpen, toggleSelect } = useSelectToggle();
-  const { browsers, isLoading: browsersLoading } = useBrowsers(namespace);
+  const { browsers, isLoading: browsersLoading } = useBrowsers(namespace); // handle error
   const launchModal = useModal();
 
   React.useEffect(() => {
     if (!value) return;
-    if (browsers.some((br) => br.metadata.name === value)) return;
+    const selectedBrowser = browsers.find((br) => br.metadata.name === value);
+
+    if (selectedBrowser && selectedBrowser.metadata.resourceVersion === resourceVersion) return;
     // selected browser is no longer among the list of browsers
-    onValueChange(undefined);
-  }, [browsers.map((br) => br.metadata.name).join(',')]);
+    // or
+    // selected value resourceVersionc changed
+
+    onValueChange(selectedBrowser);
+  }, [browsers.map((br) => br.metadata.name + br.metadata.resourceVersion).join(',')]);
 
   function launchCreateBrowser() {
     toggleSelect(false);
@@ -62,7 +68,7 @@ export const BrowserSelector: React.FC<{
       )
       .map((browser) => {
         const itemId = browser.metadata.name;
-        const status = browser.status.deploymentStatus;
+        const status = browser.status?.deploymentStatus;
         return (
           <SelectOption key={itemId} itemId={itemId} isSelected={value === itemId}>
             <span>
@@ -103,7 +109,7 @@ export const BrowserSelector: React.FC<{
         {value && (
           <FlexItem spacer={{ default: 'spacerSm' }} alignSelf={{ default: 'alignSelfCenter' }}>
             <BrowserStatusIndicator
-              status={browsers.find((br) => br.metadata.name === value)?.status.deploymentStatus}
+              status={browsers.find((br) => br.metadata.name === value)?.status?.deploymentStatus}
             />
           </FlexItem>
         )}

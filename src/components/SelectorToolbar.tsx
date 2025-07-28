@@ -29,6 +29,7 @@ export const SelectorToolbar: React.FC<{
             <BreadcrumbItem isDropdown>
               <BrowserSelector
                 namespace={namespace}
+                resourceVersion={browser?.metadata?.resourceVersion}
                 value={browser?.metadata?.name}
                 onValueChange={onBrowserChange}
               />

@@ -1,11 +1,12 @@
-import { K8sBrowser } from 'src/types/browser';
-import { PodModel } from '../utils/models';
+import { K8sBrowser } from '../types/browser';
 import { useK8sWatchResource } from '@openshift-console/dynamic-plugin-sdk';
+import { browserGVK } from '../utils/gvk';
 
 function useBrowsers(namespace: string) {
+  // error to be handled
   const [options, optionsLoaded] = useK8sWatchResource<K8sBrowser[]>({
     isList: true,
-    kind: PodModel.kind,
+    groupVersionKind: browserGVK,
     optional: true,
     namespace: namespace || 'never', // meaning dont load when theres no namespace specified
   });
