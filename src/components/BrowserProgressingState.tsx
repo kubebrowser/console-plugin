@@ -17,6 +17,7 @@ export const BrowserProgressingState: React.FC<{ specStarted: boolean }> = ({ sp
           ? 'Waiting for browser deployment to be ready.'
           : 'Terminating browser deployment.'}
       </EmptyStateBody>
+      {/* link to deployment */}
     </EmptyState>
   );
 };

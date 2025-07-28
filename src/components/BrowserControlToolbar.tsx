@@ -26,7 +26,11 @@ export const BrowserControlToolbar: React.FC<{ browser: K8sBrowser }> = ({ brows
 
   return (
     <Toolbar
-      style={{ padding: 16, opacity: isDisabled || isHovered ? 1 : '0.5' }}
+      style={{
+        padding: 16,
+        opacity: isDisabled || isHovered ? 1 : '0.5',
+        transition: 'opacity 0.5s linear',
+      }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
