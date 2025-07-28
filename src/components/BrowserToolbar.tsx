@@ -20,12 +20,6 @@ export const BrowserToolbar: React.FC<{
         toggleBrowserDrawer={toggleBrowserDrawer}
       />
       <Divider />
-      {/* {browser && (
-        <React.Fragment>
-          <BrowserControlToolbar browser={browser} />
-          <Divider />
-        </React.Fragment>
-      )} */}
     </React.Fragment>
   );
 };

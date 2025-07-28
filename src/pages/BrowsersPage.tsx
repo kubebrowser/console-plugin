@@ -2,27 +2,27 @@ import * as React from 'react';
 import { Fragment, useState } from 'react';
 import { Drawer, DrawerContent, DrawerContentBody, PageSection } from '@patternfly/react-core';
 import { BrowserToolbar } from '../components/BrowserToolbar';
-import { useParams, useNavigate } from 'react-router-dom-v5-compat';
 import { K8sBrowser } from '../types/browser';
 import { NoBrowserState } from '../components/NoBrowserState';
 import { BrowserContent } from '../components/BrowserContent';
 import { BrowserPanel } from '../components/BrowserPanel';
 import { BrowserControlToolbar } from '../components/BrowserControlToolbar';
+import { useActiveNamespace } from '@openshift-console/dynamic-plugin-sdk';
 
 export default function BrowsersPage() {
-  const navigate = useNavigate();
-  const params = useParams<{ ns: string | undefined }>();
-  const namespace = params.ns;
+  const [currentNamespace, setCurrentNamespace] = useActiveNamespace();
 
   const [browser, setBrowser] = useState<K8sBrowser | undefined>(undefined);
   const [detailsDrawerExpanded, setDetailsDrawerExpanded] = useState(false);
 
   function onNamespaceChange(newNamespace: string) {
     setBrowser(undefined);
-    navigate(`/browsers/ns/${newNamespace}`, { replace: true });
+    setDetailsDrawerExpanded(false);
+    setCurrentNamespace(newNamespace);
   }
 
   function onBrowserChange(newBrowser: K8sBrowser) {
+    // if namespace is different set?
     setBrowser(newBrowser);
   }
 
@@ -39,7 +39,7 @@ export default function BrowsersPage() {
     <Fragment>
       <PageSection style={{ padding: 0 }}>
         <BrowserToolbar
-          namespace={namespace}
+          namespace={currentNamespace}
           onNamespaceChange={onNamespaceChange}
           browser={browser}
           onBrowserChange={onBrowserChange}

@@ -3,7 +3,7 @@
     "type": "console.page/route",
     "properties": {
       "exact": true,
-      "path": ["/browsers/ns/:ns", "/browsers/all-namespaces"],
+      "path": ["/browsers"],
       "component": { "$codeRef": "BrowsersPage" }
     }
   },
@@ -13,8 +13,7 @@
       "id": "browsers",
       "name": "Browsers",
       "href": "/browsers",
-      "perspective": "dev",
-      "namespaced": true
+      "perspective": "dev"
     }
   }
 ]

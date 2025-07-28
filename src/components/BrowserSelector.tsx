@@ -34,6 +34,13 @@ export const BrowserSelector: React.FC<{
   const { browsers, isLoading: browsersLoading } = useBrowsers(namespace);
   const launchModal = useModal();
 
+  React.useEffect(() => {
+    if (!value) return;
+    if (browsers.some((br) => br.metadata.name === value)) return;
+    // selected browser is no longer among the list of browsers
+    onValueChange(undefined);
+  }, [browsers.map((br) => br.metadata.name).join(',')]);
+
   function launchCreateBrowser() {
     toggleSelect(false);
     launchModal(CreateBrowserModal, {});
@@ -76,7 +83,7 @@ export const BrowserSelector: React.FC<{
     <MenuToggle
       ref={toggleRef}
       onClick={() => toggleSelect(!isOpen)}
-      isDisabled={browsersLoading}
+      isDisabled={browsersLoading || !namespace}
       isExpanded={isOpen}
       style={
         {

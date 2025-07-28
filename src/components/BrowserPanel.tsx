@@ -63,7 +63,7 @@ export const BrowserPanel: FC<{
             </Flex>
           </FlexItem>
           <FlexItem>
-            <BrowserActionMenu onDelete={onBrowserDelete} />
+            <BrowserActionMenu browser={browser} />
           </FlexItem>
         </Flex>
       </DrawerPanelDescription>

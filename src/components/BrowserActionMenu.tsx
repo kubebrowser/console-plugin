@@ -7,11 +7,15 @@ import {
   MenuToggle,
   MenuToggleElement,
 } from '@patternfly/react-core';
+import { K8sBrowser } from '../types/browser';
+import { useDeleteModal } from '@openshift-console/dynamic-plugin-sdk';
 
-export const BrowserActionMenu: React.FunctionComponent<{ onDelete: () => void }> = ({
-  onDelete,
+export const BrowserActionMenu: React.FunctionComponent<{ browser: K8sBrowser }> = ({
+  browser,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const promptDelete = useDeleteModal(browser);
 
   const onToggleClick = () => {
     setIsOpen(!isOpen);
@@ -24,7 +28,18 @@ export const BrowserActionMenu: React.FunctionComponent<{ onDelete: () => void }
     // eslint-disable-next-line no-console
     console.log('selected', value);
     setIsOpen(false);
+    switch (value) {
+      case 'delete':
+        onDelete();
+        break;
+      default:
+        break;
+    }
   };
+
+  function onDelete() {
+    promptDelete();
+  }
 
   return (
     <Dropdown
@@ -40,7 +55,7 @@ export const BrowserActionMenu: React.FunctionComponent<{ onDelete: () => void }
       shouldFocusToggleOnSelect
     >
       <DropdownList>
-        <DropdownItem isDanger onClick={onDelete}>
+        <DropdownItem isDanger value="delete">
           Delete browser
         </DropdownItem>
       </DropdownList>
