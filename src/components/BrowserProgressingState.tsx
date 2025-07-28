@@ -7,6 +7,8 @@ export const BrowserProgressingState: React.FC<{ specStarted: boolean }> = ({ sp
     <EmptyState
       titleText={specStarted ? 'Browser is starting' : 'Browser is stopping'}
       headingLevel="h4"
+      color="red"
+      status="warning"
       icon={InProgressIcon}
       isFullHeight
     >

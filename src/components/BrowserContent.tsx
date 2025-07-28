@@ -18,7 +18,12 @@ export const BrowserContent: React.FC<{ browser: K8sBrowser }> = ({ browser }) =
   }
 
   if (browser.spec.started === false) {
-    return <BrowserStoppedState />;
+    return (
+      <BrowserStoppedState
+        browserName={browser.metadata.name}
+        browserNamespace={browser.metadata.namespace}
+      />
+    );
   }
 
   return (
