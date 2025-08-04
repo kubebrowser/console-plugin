@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 
 interface SelectToggleReturn {
   /** Whether or not the Select component should be displayed as open */
@@ -11,7 +11,7 @@ interface SelectToggleReturn {
     //     | React.MouseEvent<Element, MouseEvent>
     //     | React.ChangeEvent<Element>
     //     | React.KeyboardEvent<Element>,
-    isExpanded: boolean,
+    isExpanded: boolean
   ) => void;
   /** Function that sets the toggle state of the component */
   toggleSelect: (
@@ -21,7 +21,7 @@ interface SelectToggleReturn {
     //     | React.MouseEvent<Element, MouseEvent>
     //     | React.ChangeEvent<Element>
     //     | React.KeyboardEvent<Element>,
-    isExpanded: boolean,
+    isExpanded: boolean
   ) => void;
   /** Function that opens the component dropdown */
   openSelect: () => void;

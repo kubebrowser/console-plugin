@@ -1,0 +1,33 @@
+.pf-v5-c-console__vnc {
+  grid-area: main;
+}
+.pf-v5-c-console__actions-vnc {
+  grid-area: actions-extra;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  column-gap: var(--pf-v5-global--spacer--sm);
+}
+
+.vnc-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.vnc-container div:first-child {
+  background-color: transparent !important;
+  justify-content: center;
+}
+
+.vnc-container canvas {
+  margin: 0 !important;
+}
+
+.console-overview .vnc-container canvas {
+  cursor: auto !important;
+}
+
+.hide {
+  display: none;
+}
