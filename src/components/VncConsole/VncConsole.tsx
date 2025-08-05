@@ -45,7 +45,7 @@ export const VncConsole: FC<
     setRfb(() => {
       const isEncrypted = isConnectionEncrypted();
       const port = window.location.port || (isEncrypted ? SECURE : INSECURE);
-      const url = `${isEncrypted ? WSS : WS}://${window.location.hostname}:${port}/${path}`;
+      const url = `${isEncrypted ? WSS : WS}://${window.location.hostname}:${port}${path}`;
       const rfbInstnce = new RFBCreate(staticRenderLocationRef.current, url);
       rfbInstnce?.addEventListener("connect", () => setStatus(connected));
       rfbInstnce?.addEventListener("disconnect", () => {
