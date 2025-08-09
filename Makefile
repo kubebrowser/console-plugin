@@ -1,4 +1,4 @@
-IMG = quay.io/mohamedf0/kubebrowser-console-plugin
+IMG = quay.io/mohamedf0/kubebrowser-console-plugin:latest
 PLATFORMS=linux/amd64
 
 docker-build:

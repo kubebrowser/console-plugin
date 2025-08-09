@@ -1,9 +1,13 @@
 FROM registry.access.redhat.com/ubi9/nodejs-18:latest AS build
 USER root
 
-ADD . /usr/src/app
 WORKDIR /usr/src/app
-RUN npm install && npm run build
+
+COPY package*.json . 
+RUN npm install
+
+COPY . ./
+RUN npm run build
 
 FROM registry.access.redhat.com/ubi9/nginx-120:latest
 

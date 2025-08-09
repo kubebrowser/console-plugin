@@ -3,9 +3,8 @@ import { ConsolePluginBuildMetadata } from "@openshift-console/dynamic-plugin-sd
 const metadata: ConsolePluginBuildMetadata = {
   name: "kubebrowser-plugin",
   version: "0.0.1",
-  displayName: "OpenShift Console Plugin Template",
-  description:
-    "Template project for OpenShift Console plugins. Edit package.json to change this message and the plugin name.",
+  displayName: "Kubebrowser Plugin",
+  description: "This plugin integrates web browsing into the web console UI",
   exposedModules: {
     Browser: "./pages/Browser/Browser"
   },

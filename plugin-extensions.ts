@@ -15,7 +15,8 @@ const extensions: EncodedExtension[] = [
       id: "browsers",
       name: "Browsers",
       href: "/browsers",
-      perspective: "admin"
+      perspective: "admin",
+      section: "networking"
     }
   }
 ];
