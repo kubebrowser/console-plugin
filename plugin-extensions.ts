@@ -12,11 +12,23 @@ const extensions: EncodedExtension[] = [
   {
     type: "console.navigation/href",
     properties: {
-      id: "browsers",
-      name: "Browsers",
+      id: "browsers-admin",
+      name: "%plugin__kubebrowser_plugin~Web Browsers%",
       href: "/browsers",
       perspective: "admin",
-      section: "networking"
+      section: "networking",
+      insertAfter: ["udns", "networkattachmentdefinitions", "networkPolicies"]
+    }
+  },
+  {
+    type: "console.navigation/href",
+    properties: {
+      id: "browsers-dev",
+      name: "%plugin__kubebrowser_plugin~Web Browsers%",
+      href: "/browsers",
+      perspective: "dev",
+      insertAfter: "topology",
+      section: "top"
     }
   }
 ];

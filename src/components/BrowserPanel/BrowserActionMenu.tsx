@@ -9,11 +9,14 @@ import {
 } from "@patternfly/react-core";
 import { K8sBrowser } from "../../types/browser";
 import { useDeleteModal } from "@openshift-console/dynamic-plugin-sdk";
+import { useTranslation } from "react-i18next";
 
 export const BrowserActionMenu: React.FunctionComponent<{ browser: K8sBrowser }> = ({
   browser
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const { t } = useTranslation();
 
   const promptDelete = useDeleteModal(browser);
 
@@ -48,7 +51,7 @@ export const BrowserActionMenu: React.FunctionComponent<{ browser: K8sBrowser }>
       onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
-          Actions
+          {t("Actions")}
         </MenuToggle>
       )}
       ouiaId="BasicDropdown"
@@ -56,7 +59,7 @@ export const BrowserActionMenu: React.FunctionComponent<{ browser: K8sBrowser }>
     >
       <DropdownList>
         <DropdownItem isDanger value="delete">
-          Delete browser
+          {t("Delete browser")}
         </DropdownItem>
       </DropdownList>
     </Dropdown>

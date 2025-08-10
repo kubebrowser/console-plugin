@@ -15,9 +15,12 @@ import { BrowserStatusIndicator } from "../BrowserStatusIndicator/BrowserStatusI
 import { k8sPatch, ResourceLink, Timestamp } from "@openshift-console/dynamic-plugin-sdk";
 import { deploymentGVK, namespaceGVK } from "../../utils/gvk";
 import { BrowserModel } from "../../utils/models";
+import { useTranslation } from "react-i18next";
 
 export const BrowserDetails: FC<{ browser: K8sBrowser }> = ({ browser }) => {
   const [isLoading, setLoading] = React.useState(false);
+  const { t } = useTranslation();
+
   async function handleStartedChange(_e: any, checked: boolean) {
     if (isLoading) return;
     setLoading(true);
@@ -51,11 +54,11 @@ export const BrowserDetails: FC<{ browser: K8sBrowser }> = ({ browser }) => {
         }}
       >
         <DescriptionListGroup>
-          <DescriptionListTerm>Name</DescriptionListTerm>
+          <DescriptionListTerm>{t("Name")}</DescriptionListTerm>
           <DescriptionListDescription>{browser.metadata.name}</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>Started</DescriptionListTerm>
+          <DescriptionListTerm>{t("Started")}</DescriptionListTerm>
           <DescriptionListDescription>
             <Switch
               id="no-label-switch-on"
@@ -67,14 +70,14 @@ export const BrowserDetails: FC<{ browser: K8sBrowser }> = ({ browser }) => {
           </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>Namespace</DescriptionListTerm>
+          <DescriptionListTerm>{t("Namespace")}</DescriptionListTerm>
           <DescriptionListDescription>
             <ResourceLink name={browser.metadata.namespace} groupVersionKind={namespaceGVK} />
           </DescriptionListDescription>
         </DescriptionListGroup>
 
         <DescriptionListGroup>
-          <DescriptionListTerm>Deployment</DescriptionListTerm>
+          <DescriptionListTerm>{t("Deployment")}</DescriptionListTerm>
           <DescriptionListDescription>
             <ResourceLink
               name={browser.metadata.name}
@@ -85,14 +88,14 @@ export const BrowserDetails: FC<{ browser: K8sBrowser }> = ({ browser }) => {
         </DescriptionListGroup>
 
         <DescriptionListGroup>
-          <DescriptionListTerm>Date Created</DescriptionListTerm>
+          <DescriptionListTerm>{t("Date Created")}</DescriptionListTerm>
           <DescriptionListDescription>
             <Timestamp timestamp={browser.metadata.creationTimestamp!} />
           </DescriptionListDescription>
         </DescriptionListGroup>
 
         <DescriptionListGroup>
-          <DescriptionListTerm>Status</DescriptionListTerm>
+          <DescriptionListTerm>{t("Status")}</DescriptionListTerm>
           <DescriptionListDescription>
             {browser.status?.deploymentStatus ? (
               <Flex alignSelf={{ default: "alignSelfCenter" }} flexWrap={{ default: "nowrap" }}>

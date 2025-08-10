@@ -4,6 +4,7 @@ import { FC } from "react";
 import { InfoCircleIcon } from "@patternfly/react-icons";
 import { k8sPatch } from "@openshift-console/dynamic-plugin-sdk";
 import { BrowserModel } from "../../utils/models";
+import { useTranslation } from "react-i18next";
 
 export const BrowserActions: FC<{
   browserName?: string;
@@ -13,6 +14,8 @@ export const BrowserActions: FC<{
   toggleBrowserDrawer?: () => void;
 }> = ({ browserName, specStarted, toggleBrowserDrawer, browserNamespace }) => {
   const [btnLoading, setBtnLoading] = React.useState<"stop" | "start" | undefined>(undefined);
+
+  const { t } = useTranslation();
 
   async function patchStarted(value: boolean) {
     if (btnLoading) return;
@@ -50,7 +53,7 @@ export const BrowserActions: FC<{
         onClick={() => patchStarted(false)}
         isDisabled={!browserName || specStarted !== true || !!btnLoading}
       >
-        Stop
+        {t("Stop")}
       </Button>
       <Button
         variant="secondary"
@@ -59,7 +62,7 @@ export const BrowserActions: FC<{
         isLoading={btnLoading === "start"}
         isDisabled={!browserName || specStarted !== false || !!btnLoading}
       >
-        Start
+        {t("Start")}
       </Button>
       <Button
         icon={<InfoCircleIcon />}

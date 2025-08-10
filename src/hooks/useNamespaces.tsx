@@ -4,7 +4,8 @@ import { useK8sWatchResource, K8sResourceKind } from "@openshift-console/dynamic
 
 function useNamespaces() {
   const { t } = useTranslation();
-  const isProjects = t("console-shared~Project") || t("console-shared~Namespace");
+  const isProjects =
+    t("plugin__kubebrowser-plugin~Project") || t("plugin__kubebrowser-plugin~Namespace");
 
   const [options, optionsLoaded] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,

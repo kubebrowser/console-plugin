@@ -13,12 +13,14 @@ import { ChevronLeftIcon, ChevronRightIcon, UndoIcon } from "@patternfly/react-i
 import * as React from "react";
 import { K8sBrowser } from "../../types/browser";
 import { consoleFetch } from "@openshift-console/dynamic-plugin-sdk";
+import { useTranslation } from "react-i18next";
 
 enum ControlActions {
   navigate = "page-navigate",
   backward = "page-goback",
   forward = "page-goforward",
-  reload = "page-reload"
+  reload = "page-reload",
+  reset = "page-reset"
 }
 
 export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ browser }) => {
@@ -26,6 +28,8 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
   const [isHovered, setHovered] = React.useState(false);
   const isDisabled = !browser || browser.status?.deploymentStatus !== "Ready" || !!loadingAction;
   const inputRef = React.createRef<HTMLInputElement>();
+
+  const { t } = useTranslation();
 
   function onMouseEnter() {
     setHovered(true);
@@ -79,6 +83,19 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
     setLoadingAction(undefined);
   }
 
+  async function pageReset() {
+    if (loadingAction) return;
+    setLoadingAction(ControlActions.reset);
+    await sendAction({ kind: ControlActions.reset });
+    setLoadingAction(undefined);
+  }
+
+  function onTextInputKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      navigateToUrl();
+    }
+  }
+
   return (
     <Toolbar
       style={{
@@ -93,6 +110,12 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
         <ToolbarGroup align={{ default: "alignStart" }}>
           <ActionList>
             <ActionListGroup>
+              <ActionListItem style={{ display: undefined }}>
+                <Button isDisabled={isDisabled} variant="control" onClick={pageReset}>
+                  {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Reset")}
+                  {/* AngleDoubleLeftIcon ? */}
+                </Button>
+              </ActionListItem>
               <ActionListItem>
                 <Button
                   isDisabled={isDisabled}
@@ -142,13 +165,14 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
                   placeholder="http://myserver.svc.cluster.local:8080"
                   style={{ width: "300px" }}
                   ref={inputRef}
+                  onKeyUp={onTextInputKeyUp}
                   isDisabled={isDisabled}
                 />
               </ActionListItem>
 
               <ActionListItem>
                 <Button isDisabled={isDisabled} variant="control" onClick={navigateToUrl}>
-                  {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : "Go"}
+                  {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Go")}
                 </Button>
               </ActionListItem>
             </ActionListGroup>

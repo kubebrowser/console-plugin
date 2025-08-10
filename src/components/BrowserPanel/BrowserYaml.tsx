@@ -7,9 +7,12 @@ import {
 import * as React from "react";
 import { FC } from "react";
 import { K8sBrowser } from "../../types/browser";
+import { useTranslation } from "react-i18next";
 
 export const BrowserYaml: FC<{ browser: K8sBrowser }> = ({ browser }) => {
   const [copied, setCopied] = React.useState(false);
+  const { t } = useTranslation();
+
   const code = React.useMemo(() => {
     return JSON.stringify(browser, undefined, 2);
   }, [browser]);
@@ -25,16 +28,16 @@ export const BrowserYaml: FC<{ browser: K8sBrowser }> = ({ browser }) => {
       actions={
         <CodeBlockAction>
           <ClipboardCopyButton
-            id="basic-copy-button"
+            id="copy-browser-btn"
             textId="code-content"
-            aria-label="Copy to clipboard basic example code block"
+            aria-label="Copy browser yaml"
             onClick={copyYaml}
             exitDelay={copied ? 1500 : 600}
             maxWidth="110px"
             variant="plain"
             onTooltipHidden={() => setCopied(false)}
           >
-            {copied ? "Successfully copied to clipboard!" : "Copy to clipboard"}
+            {copied ? t("Successfully copied to clipboard") : t("Copy to clipboard")}
           </ClipboardCopyButton>
         </CodeBlockAction>
       }

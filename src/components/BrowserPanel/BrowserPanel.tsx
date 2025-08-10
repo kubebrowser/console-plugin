@@ -18,6 +18,7 @@ import { BrowserDetails } from "./BrowserDetails";
 import { BrowserActionMenu } from "./BrowserActionMenu";
 import { BrowserIcon } from "../ResourceIcon/BrowserIcon";
 import { BrowserYaml } from "./BrowserYaml";
+import { useTranslation } from "react-i18next";
 
 export const BrowserPanel: FC<{
   browser: K8sBrowser;
@@ -25,6 +26,8 @@ export const BrowserPanel: FC<{
   onBrowserDelete: () => void;
 }> = ({ browser, onClose, onBrowserDelete }) => {
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
+
+  const { t } = useTranslation();
 
   const handleTabClick = (
     _: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent,
@@ -68,16 +71,18 @@ export const BrowserPanel: FC<{
         </Flex>
       </DrawerPanelDescription>
       <DrawerPanelBody>
-        <Tabs
-          activeKey={activeTabKey}
-          onSelect={handleTabClick}
-          aria-label="Tabs in the default example"
-          role="region"
-        >
-          <Tab eventKey={0} title={<TabTitleText>Details</TabTitleText>}>
+        <Tabs activeKey={activeTabKey} onSelect={handleTabClick} aria-label="BrowserPanel tabs">
+          <Tab eventKey={0} title={<TabTitleText>{t("Details")}</TabTitleText>}>
             <BrowserDetails browser={browser} />
           </Tab>
-          <Tab eventKey={1} title={<TabTitleText>JSON (read-only)</TabTitleText>}>
+          <Tab
+            eventKey={1}
+            title={
+              <TabTitleText>
+                {t("JSON")} ({t("read-only")})
+              </TabTitleText>
+            }
+          >
             <BrowserYaml browser={browser} />
           </Tab>
         </Tabs>

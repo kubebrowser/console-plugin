@@ -22,6 +22,7 @@ import { CreateBrowserModal } from "../CreateBrowserModal/CreateBrowserModal";
 import { K8sBrowser } from "../../types/browser";
 import { BrowserStatusIndicator } from "../BrowserStatusIndicator/BrowserStatusIndicator";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 export const BrowserSelector: React.FC<{
   namespace: string;
@@ -34,6 +35,8 @@ export const BrowserSelector: React.FC<{
   const { isOpen, toggleSelect } = useSelectToggle();
   const { browsers, isLoading: browsersLoading } = useBrowsers(namespace); // handle error
   const launchModal = useModal();
+
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (!value) return;
@@ -105,7 +108,7 @@ export const BrowserSelector: React.FC<{
         </FlexItem>
         <FlexItem spacer={{ default: "spacerSm" }}>
           <span style={{ position: "relative", top: "1px", opacity: !value ? "0.5" : undefined }}>
-            {value || (browsersLoading ? "Loading Browsers" : "Select Browser")}
+            {value || (browsersLoading ? t("Loading Browsers") : t("Select Browser"))}
           </span>
         </FlexItem>
         {value && (
@@ -136,7 +139,7 @@ export const BrowserSelector: React.FC<{
             value={input}
             aria-label="Filter browser"
             type="search"
-            placeholder="Filter browsers..."
+            placeholder={t("Filter browsers") + "..."}
             onChange={(_event, value) => handleTextInputChange(value)}
           />
         </MenuSearchInput>
@@ -144,7 +147,7 @@ export const BrowserSelector: React.FC<{
       <SelectList>{filteredDeploymentSelectMenuItems}</SelectList>
       <MenuFooter>
         <Button variant="secondary" onClick={launchCreateBrowser}>
-          New Browser
+          {t("New Browser")}
         </Button>
       </MenuFooter>
     </Select>

@@ -9,11 +9,14 @@ import {
 import { OffIcon } from "@patternfly/react-icons";
 import { k8sPatch } from "@openshift-console/dynamic-plugin-sdk";
 import { BrowserModel } from "../../utils/models";
+import { useTranslation } from "react-i18next";
 
 export const BrowserStoppedState: React.FC<{ browserName: string; browserNamespace: string }> = ({
   browserName,
   browserNamespace
 }) => {
+  const { t } = useTranslation();
+
   async function startBrowser() {
     try {
       await k8sPatch({
@@ -36,12 +39,12 @@ export const BrowserStoppedState: React.FC<{ browserName: string; browserNamespa
     }
   }
   return (
-    <EmptyState titleText="Browser is Stopped" headingLevel="h4" icon={OffIcon} isFullHeight>
-      <EmptyStateBody>Turn on browser to use it.</EmptyStateBody>
+    <EmptyState titleText={t("Browser is Stopped")} headingLevel="h4" icon={OffIcon} isFullHeight>
+      <EmptyStateBody>{t("Turn on browser to use it.")}</EmptyStateBody>
       <EmptyStateFooter>
         <EmptyStateActions>
           <Button variant="primary" onClick={startBrowser}>
-            Start Browser
+            {t("Start Browser")}
           </Button>
         </EmptyStateActions>
       </EmptyStateFooter>

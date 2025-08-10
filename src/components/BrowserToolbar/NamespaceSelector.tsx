@@ -16,6 +16,7 @@ import {
 import { NamespaceIcon } from "../ResourceIcon/NamespaceIcon";
 import { useMemo } from "react";
 import useNamespaces from "../../hooks/useNamespaces";
+import { useTranslation } from "react-i18next";
 
 export const NamespaceSelector: React.FC<{
   value: string;
@@ -25,6 +26,7 @@ export const NamespaceSelector: React.FC<{
 
   const { isOpen, toggleSelect } = useSelectToggle();
   const { namespaces, isLoading: namespacesLoading } = useNamespaces();
+  const { t } = useTranslation();
 
   const handleTextInputChange = (value: string) => {
     setInput(value);
@@ -73,7 +75,7 @@ export const NamespaceSelector: React.FC<{
         </FlexItem>
         <FlexItem spacer={{ default: "spacerSm" }}>
           <span style={{ position: "relative", top: "1px", opacity: !value ? "0.5" : undefined }}>
-            {value || (namespacesLoading ? "Loading Namespaces" : "Select Namespace")}
+            {value || (namespacesLoading ? t("Loading Namespaces") : t("Select Namespace"))}
           </span>
         </FlexItem>
       </Flex>
@@ -97,7 +99,7 @@ export const NamespaceSelector: React.FC<{
             value={input}
             aria-label="Filter namespaces"
             type="search"
-            placeholder="Filter namespaces..."
+            placeholder={t("Filter namespaces") + "..."}
             onChange={(_event, value) => handleTextInputChange(value)}
           />
         </MenuSearchInput>

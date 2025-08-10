@@ -14,6 +14,7 @@ import {
   Button,
   Spinner
 } from "@patternfly/react-core";
+import { useTranslation } from "react-i18next";
 
 const { connected, disconnected, connecting } = ConsoleState;
 
@@ -27,7 +28,7 @@ export const VncConsole: FC<
   const [rfb, setRfb] = useState<RFBCreate>();
   const [status, setStatus] = useState<ConsoleState>(disconnected);
 
-  // const { t } = useTranslation("test");
+  const { t } = useTranslation();
 
   const staticRenderLocationRef = useRef(null);
   const StaticRenderLocation = useMemo(
@@ -84,16 +85,16 @@ export const VncConsole: FC<
       {/* for whatever reason including this causes flickering */}
       {status === connecting && (
         <EmptyState icon={Spinner}>
-          <EmptyStateBody>Loading...</EmptyStateBody>
+          <EmptyStateBody>{t("Loading")}...</EmptyStateBody>
         </EmptyState>
       )}
 
       {status === disconnected && (
         <EmptyState>
-          <EmptyStateBody>{"Click Connect to open the VNC console."}</EmptyStateBody>
+          <EmptyStateBody>{t("Click Connect to open the VNC console.")}</EmptyStateBody>
           <EmptyStateFooter>
             <Button onClick={connect} variant="primary">
-              {"Connect"}
+              {t("Connect")}
             </Button>
           </EmptyStateFooter>
         </EmptyState>
