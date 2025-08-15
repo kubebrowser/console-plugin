@@ -165,6 +165,7 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
                   placeholder="http://myserver.svc.cluster.local:8080"
                   style={{ width: "300px" }}
                   ref={inputRef}
+                  id="browser-url-input"
                   onKeyUp={onTextInputKeyUp}
                   isDisabled={isDisabled}
                 />

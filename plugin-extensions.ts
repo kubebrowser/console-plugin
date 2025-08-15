@@ -13,7 +13,7 @@ const extensions: EncodedExtension[] = [
     type: "console.navigation/href",
     properties: {
       id: "browsers-admin",
-      name: "%plugin__kubebrowser_plugin~Web Browsers%",
+      name: "%plugin__kubebrowser-plugin~Web Browsers%",
       href: "/browsers",
       perspective: "admin",
       section: "networking",
@@ -24,7 +24,7 @@ const extensions: EncodedExtension[] = [
     type: "console.navigation/href",
     properties: {
       id: "browsers-dev",
-      name: "%plugin__kubebrowser_plugin~Web Browsers%",
+      name: "%plugin__kubebrowser-plugin~Web Browsers%",
       href: "/browsers",
       perspective: "dev",
       insertAfter: "topology",

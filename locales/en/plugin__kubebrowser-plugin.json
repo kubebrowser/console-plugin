@@ -49,5 +49,6 @@
   "Terminating browser deployment.": "Terminating browser deployment.",
   "Turn on browser to use it.": "Turn on browser to use it.",
   "Unable to identity the browser state. See the deployment": "Unable to identity the browser state. See the deployment",
-  "Waiting for browser deployment to be ready.": "Waiting for browser deployment to be ready."
+  "Waiting for browser deployment to be ready.": "Waiting for browser deployment to be ready.",
+  "Web Browsers": "Web Browsers"
 }
