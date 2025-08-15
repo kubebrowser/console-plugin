@@ -18,7 +18,7 @@ import { BrowserDetails } from "./BrowserDetails";
 import { BrowserActionMenu } from "./BrowserActionMenu";
 import { BrowserIcon } from "../ResourceIcon/BrowserIcon";
 import { BrowserYaml } from "./BrowserYaml";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const BrowserPanel: FC<{
   browser: K8sBrowser;
@@ -27,7 +27,7 @@ export const BrowserPanel: FC<{
 }> = ({ browser, onClose, onBrowserDelete }) => {
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
 
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   const handleTabClick = (
     _: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent,

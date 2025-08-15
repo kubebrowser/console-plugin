@@ -1,10 +1,10 @@
 import * as React from "react";
 import { EmptyState, EmptyStateBody } from "@patternfly/react-core";
 import { InProgressIcon } from "@patternfly/react-icons";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const BrowserProgressingState: React.FC<{ specStarted: boolean }> = ({ specStarted }) => {
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
   return (
     <EmptyState
       titleText={specStarted ? t("Browser is starting") : t("Browser is stopping")}

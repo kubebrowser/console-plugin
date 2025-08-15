@@ -14,12 +14,12 @@ import {
   Spinner,
   TextInput
 } from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
 import { BrowserModel } from "../../utils/models";
 import { k8sCreate, useActiveNamespace } from "@openshift-console/dynamic-plugin-sdk";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const CreateBrowserModal: React.FC<{ closeModal: () => void }> = ({ closeModal }) => {
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
   const [name, setName] = React.useState<string>("");
   const [namespace] = useActiveNamespace();
   const [started, setStarted] = React.useState<boolean>(false);

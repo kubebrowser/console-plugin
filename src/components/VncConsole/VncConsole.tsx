@@ -1,6 +1,5 @@
 import React, { FC, HTMLProps, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import cn from "classnames";
-// import { useTranslation } from "react-i18next";
 import { ConsoleState, INSECURE, isConnectionEncrypted, SECURE, WS, WSS } from "./utils";
 // @ts-ignore
 import RFBCreate from "@novnc/novnc/lib/rfb";
@@ -14,7 +13,7 @@ import {
   Button,
   Spinner
 } from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 const { connected, disconnected, connecting } = ConsoleState;
 
@@ -28,7 +27,7 @@ export const VncConsole: FC<
   const [rfb, setRfb] = useState<RFBCreate>();
   const [status, setStatus] = useState<ConsoleState>(disconnected);
 
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   const staticRenderLocationRef = useRef(null);
   const StaticRenderLocation = useMemo(

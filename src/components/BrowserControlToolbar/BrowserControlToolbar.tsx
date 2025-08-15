@@ -13,7 +13,7 @@ import { ChevronLeftIcon, ChevronRightIcon, UndoIcon } from "@patternfly/react-i
 import * as React from "react";
 import { K8sBrowser } from "../../types/browser";
 import { consoleFetch } from "@openshift-console/dynamic-plugin-sdk";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 enum ControlActions {
   navigate = "page-navigate",
@@ -29,7 +29,7 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
   const isDisabled = !browser || browser.status?.deploymentStatus !== "Ready" || !!loadingAction;
   const inputRef = React.createRef<HTMLInputElement>();
 
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   function onMouseEnter() {
     setHovered(true);

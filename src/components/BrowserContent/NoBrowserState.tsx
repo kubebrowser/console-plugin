@@ -1,10 +1,10 @@
 import { EmptyState, EmptyStateBody, EmptyStateFooter } from "@patternfly/react-core";
 import { BlueprintIcon } from "@patternfly/react-icons";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const NoBrowserState = () => {
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
   return (
     <EmptyState
       titleText={t("Nothing to render")}

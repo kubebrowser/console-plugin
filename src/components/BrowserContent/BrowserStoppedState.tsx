@@ -9,13 +9,13 @@ import {
 import { OffIcon } from "@patternfly/react-icons";
 import { k8sPatch } from "@openshift-console/dynamic-plugin-sdk";
 import { BrowserModel } from "../../utils/models";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const BrowserStoppedState: React.FC<{ browserName: string; browserNamespace: string }> = ({
   browserName,
   browserNamespace
 }) => {
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   async function startBrowser() {
     try {

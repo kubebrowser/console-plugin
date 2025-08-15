@@ -9,14 +9,14 @@ import {
 } from "@patternfly/react-core";
 import { K8sBrowser } from "../../types/browser";
 import { useDeleteModal } from "@openshift-console/dynamic-plugin-sdk";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const BrowserActionMenu: React.FunctionComponent<{ browser: K8sBrowser }> = ({
   browser
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   const promptDelete = useDeleteModal(browser);
 

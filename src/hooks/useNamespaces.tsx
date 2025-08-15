@@ -1,11 +1,10 @@
-import { useTranslation } from "react-i18next";
 import { NamespaceModel, ProjectModel } from "../utils/models";
 import { useK8sWatchResource, K8sResourceKind } from "@openshift-console/dynamic-plugin-sdk";
+import { usePluginTranslation } from "./usePluginTranslation";
 
 function useNamespaces() {
-  const { t } = useTranslation();
-  const isProjects =
-    t("plugin__kubebrowser-plugin~Project") || t("plugin__kubebrowser-plugin~Namespace");
+  const { t } = usePluginTranslation();
+  const isProjects = t("Project") || t("Namespace");
 
   const [options, optionsLoaded] = useK8sWatchResource<K8sResourceKind[]>({
     isList: true,

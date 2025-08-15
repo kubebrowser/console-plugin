@@ -4,7 +4,7 @@ import { FC } from "react";
 import { InfoCircleIcon } from "@patternfly/react-icons";
 import { k8sPatch } from "@openshift-console/dynamic-plugin-sdk";
 import { BrowserModel } from "../../utils/models";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const BrowserActions: FC<{
   browserName?: string;
@@ -15,7 +15,7 @@ export const BrowserActions: FC<{
 }> = ({ browserName, specStarted, toggleBrowserDrawer, browserNamespace }) => {
   const [btnLoading, setBtnLoading] = React.useState<"stop" | "start" | undefined>(undefined);
 
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   async function patchStarted(value: boolean) {
     if (btnLoading) return;

@@ -7,11 +7,11 @@ import {
 import * as React from "react";
 import { FC } from "react";
 import { K8sBrowser } from "../../types/browser";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const BrowserYaml: FC<{ browser: K8sBrowser }> = ({ browser }) => {
   const [copied, setCopied] = React.useState(false);
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   const code = React.useMemo(() => {
     return JSON.stringify(browser, undefined, 2);

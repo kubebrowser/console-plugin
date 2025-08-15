@@ -15,11 +15,11 @@ import { BrowserStatusIndicator } from "../BrowserStatusIndicator/BrowserStatusI
 import { k8sPatch, ResourceLink, Timestamp } from "@openshift-console/dynamic-plugin-sdk";
 import { deploymentGVK, namespaceGVK } from "../../utils/gvk";
 import { BrowserModel } from "../../utils/models";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const BrowserDetails: FC<{ browser: K8sBrowser }> = ({ browser }) => {
   const [isLoading, setLoading] = React.useState(false);
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   async function handleStartedChange(_e: any, checked: boolean) {
     if (isLoading) return;

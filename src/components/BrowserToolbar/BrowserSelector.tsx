@@ -22,7 +22,7 @@ import { CreateBrowserModal } from "../CreateBrowserModal/CreateBrowserModal";
 import { K8sBrowser } from "../../types/browser";
 import { BrowserStatusIndicator } from "../BrowserStatusIndicator/BrowserStatusIndicator";
 import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const BrowserSelector: React.FC<{
   namespace: string;
@@ -36,7 +36,7 @@ export const BrowserSelector: React.FC<{
   const { browsers, isLoading: browsersLoading } = useBrowsers(namespace); // handle error
   const launchModal = useModal();
 
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   React.useEffect(() => {
     if (!value) return;

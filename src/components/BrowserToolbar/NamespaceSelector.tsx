@@ -16,7 +16,7 @@ import {
 import { NamespaceIcon } from "../ResourceIcon/NamespaceIcon";
 import { useMemo } from "react";
 import useNamespaces from "../../hooks/useNamespaces";
-import { useTranslation } from "react-i18next";
+import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 
 export const NamespaceSelector: React.FC<{
   value: string;
@@ -26,7 +26,7 @@ export const NamespaceSelector: React.FC<{
 
   const { isOpen, toggleSelect } = useSelectToggle();
   const { namespaces, isLoading: namespacesLoading } = useNamespaces();
-  const { t } = useTranslation();
+  const { t } = usePluginTranslation();
 
   const handleTextInputChange = (value: string) => {
     setInput(value);
