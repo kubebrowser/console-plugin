@@ -1,4 +1,4 @@
-IMG = ghcr.io/kubebrowser/console-plugin:0.0.1
+IMG = ghcr.io/kubebrowser/console-plugin:0.0.2
 PLATFORMS=linux/amd64,linux/arm64
 
 docker-build:
