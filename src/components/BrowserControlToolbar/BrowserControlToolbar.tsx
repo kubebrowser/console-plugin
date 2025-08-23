@@ -26,6 +26,7 @@ enum ControlActions {
 export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ browser }) => {
   const [loadingAction, setLoadingAction] = React.useState<string | undefined>();
   const [isHovered, setHovered] = React.useState(false);
+  const [isHidden, setHidden] = React.useState(false);
   const isDisabled = !browser || browser.status?.deploymentStatus !== "Ready" || !!loadingAction;
   const inputRef = React.createRef<HTMLInputElement>();
 
@@ -37,6 +38,10 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
 
   function onMouseLeave() {
     setHovered(false);
+  }
+
+  function toggleHidden() {
+    setHidden(!isHidden);
   }
 
   async function sendAction(args: { kind: string; url?: string }) {
@@ -110,10 +115,24 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
         <ToolbarGroup align={{ default: "alignStart" }}>
           <ActionList>
             <ActionListGroup>
-              <ActionListItem style={{ display: undefined }}>
+              <ActionListItem>
+                <Button isDisabled={isDisabled} variant="control" onClick={toggleHidden}>
+                  {isHidden ? "Show" : "Hide"} Controls
+                </Button>
+              </ActionListItem>
+            </ActionListGroup>
+          </ActionList>
+        </ToolbarGroup>
+
+        <ToolbarGroup
+          align={{ default: "alignStart" }}
+          style={{ display: isHidden ? "none" : undefined }}
+        >
+          <ActionList>
+            <ActionListGroup>
+              <ActionListItem>
                 <Button isDisabled={isDisabled} variant="control" onClick={pageReset}>
                   {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Reset")}
-                  {/* AngleDoubleLeftIcon ? */}
                 </Button>
               </ActionListItem>
               <ActionListItem>
@@ -157,7 +176,10 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
             </ActionListGroup>
           </ActionList>
         </ToolbarGroup>
-        <ToolbarGroup align={{ default: "alignEnd" }}>
+        <ToolbarGroup
+          align={{ default: "alignEnd" }}
+          style={{ display: isHidden ? "none" : undefined }}
+        >
           <ActionList>
             <ActionListGroup>
               <ActionListItem>
