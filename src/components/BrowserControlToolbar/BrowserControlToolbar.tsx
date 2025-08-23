@@ -25,19 +25,19 @@ enum ControlActions {
 
 export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ browser }) => {
   const [loadingAction, setLoadingAction] = React.useState<string | undefined>();
-  const [isHovered, setHovered] = React.useState(false);
+  const [isHovered, setHovered] = React.useState<string | undefined>();
   const [isHidden, setHidden] = React.useState(false);
   const isDisabled = !browser || browser.status?.deploymentStatus !== "Ready" || !!loadingAction;
   const inputRef = React.createRef<HTMLInputElement>();
 
   const { t } = usePluginTranslation();
 
-  function onMouseEnter() {
-    setHovered(true);
+  function onMouseEnterSubject(name: string) {
+    setHovered(name);
   }
 
-  function onMouseLeave() {
-    setHovered(false);
+  function onMouseLeaveSubject() {
+    setHovered(undefined);
   }
 
   function toggleHidden() {
@@ -101,20 +101,23 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
     }
   }
 
+  function getHoverConfig(name: string) {
+    return {
+      style: {
+        opacity: isDisabled || isHovered === name ? 1 : "0.3",
+        transition: "opacity 200ms linear"
+      },
+      onMouseEnter: () => onMouseEnterSubject(name),
+      onMouseLeave: () => onMouseLeaveSubject()
+    };
+  }
+
   return (
-    <Toolbar
-      style={{
-        padding: 16,
-        opacity: isDisabled || isHovered ? 1 : "0.3",
-        transition: "opacity 0.5s linear"
-      }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <Toolbar style={{ padding: 16 }}>
       <ToolbarContent>
         <ToolbarGroup align={{ default: "alignStart" }}>
           <ActionList>
-            <ActionListGroup>
+            <ActionListGroup {...getHoverConfig("one")}>
               <ActionListItem>
                 <Button isDisabled={isDisabled} variant="control" onClick={toggleHidden}>
                   {isHidden ? "Show" : "Hide"} Controls
@@ -129,8 +132,8 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
           style={{ display: isHidden ? "none" : undefined }}
         >
           <ActionList>
-            <ActionListGroup>
-              <ActionListItem>
+            <ActionListGroup {...getHoverConfig("two")}>
+              <ActionListItem style={{ display: "none" }}>
                 <Button isDisabled={isDisabled} variant="control" onClick={pageReset}>
                   {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Reset")}
                 </Button>
@@ -181,7 +184,7 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
           style={{ display: isHidden ? "none" : undefined }}
         >
           <ActionList>
-            <ActionListGroup>
+            <ActionListGroup {...getHoverConfig("three")}>
               <ActionListItem>
                 <TextInput
                   placeholder="http://myserver.svc.cluster.local:8080"
