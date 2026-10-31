@@ -46,26 +46,26 @@ export const VncConsole: FC<
       const isEncrypted = isConnectionEncrypted();
       const port = window.location.port || (isEncrypted ? SECURE : INSECURE);
       const url = `${isEncrypted ? WSS : WS}://${window.location.hostname}:${port}${path}`;
-      const rfbInstnce = new RFBCreate(staticRenderLocationRef.current, url);
-      rfbInstnce?.addEventListener("connect", () => setStatus(connected));
-      rfbInstnce?.addEventListener("disconnect", () => {
+      const rfbInstance = new RFBCreate(staticRenderLocationRef.current, url);
+      rfbInstance?.addEventListener("connect", () => setStatus(connected));
+      rfbInstance?.addEventListener("disconnect", () => {
         setStatus(disconnected);
       });
-      rfbInstnce?.addEventListener("securityfailure", () => {
+      rfbInstance?.addEventListener("securityfailure", () => {
         setStatus(disconnected);
       });
 
-      rfbInstnce.viewOnly = viewOnly;
-      rfbInstnce.scaleViewport = scaleViewport;
+      rfbInstance.viewOnly = viewOnly;
+      rfbInstance.scaleViewport = scaleViewport;
 
-      return rfbInstnce;
+      return rfbInstance;
     });
   }, [path, viewOnly, scaleViewport]);
 
   useEffect(() => {
     if (!rfb && status === disconnected) {
       try {
-        initLogging("debug");
+        initLogging("warn");
         connect();
       } catch (e) {
         console.error(e);

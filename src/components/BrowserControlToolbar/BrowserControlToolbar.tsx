@@ -5,9 +5,12 @@ import {
   ActionList,
   ActionListGroup,
   ActionListItem,
+  Alert,
+  AlertActionCloseButton,
   Button,
   TextInput,
-  Spinner
+  Spinner,
+  Tooltip
 } from "@patternfly/react-core";
 import { ChevronLeftIcon, ChevronRightIcon, UndoIcon } from "@patternfly/react-icons";
 import * as React from "react";
@@ -23,12 +26,21 @@ enum ControlActions {
   reset = "page-reset"
 }
 
+const SCHEME_PATTERN = /^[a-z][a-z0-9+.-]*:\/\//i;
+
+// Mirror browser address bars: assume http:// when no scheme is typed.
+function normalizeUrl(input: string): string {
+  return SCHEME_PATTERN.test(input) ? input : `http://${input}`;
+}
+
 export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ browser }) => {
   const [loadingAction, setLoadingAction] = React.useState<string | undefined>();
   const [isHovered, setHovered] = React.useState<string | undefined>();
   const [isHidden, setHidden] = React.useState(false);
+  const [isInputFocused, setInputFocused] = React.useState(false);
+  const [actionError, setActionError] = React.useState<string | undefined>();
   const isDisabled = !browser || browser.status?.deploymentStatus !== "Ready" || !!loadingAction;
-  const inputRef = React.createRef<HTMLInputElement>();
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const { t } = usePluginTranslation();
 
@@ -55,8 +67,10 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
         body: JSON.stringify(args)
       });
       console.log(response);
+      setActionError(undefined);
     } catch (err) {
       console.log(err);
+      setActionError((err as Error)?.message || t("An error occurred. Please try again."));
     }
   }
 
@@ -83,8 +97,10 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
 
   async function navigateToUrl() {
     if (loadingAction) return;
+    const input = inputRef.current?.value.trim();
+    if (!input) return;
     setLoadingAction(ControlActions.navigate);
-    await sendAction({ kind: ControlActions.navigate, url: inputRef.current?.value });
+    await sendAction({ kind: ControlActions.navigate, url: normalizeUrl(input) });
     setLoadingAction(undefined);
   }
 
@@ -95,7 +111,7 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
     setLoadingAction(undefined);
   }
 
-  function onTextInputKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
+  function onTextInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       navigateToUrl();
     }
@@ -104,7 +120,8 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
   function getHoverConfig(name: string) {
     return {
       style: {
-        opacity: isDisabled || isHovered === name ? 1 : "0.3",
+        opacity:
+          isDisabled || isHovered === name || (name === "three" && isInputFocused) ? 1 : "0.6",
         transition: "opacity 200ms linear"
       },
       onMouseEnter: () => onMouseEnterSubject(name),
@@ -113,98 +130,127 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
   }
 
   return (
-    <Toolbar style={{ padding: 16 }}>
-      <ToolbarContent>
-        <ToolbarGroup align={{ default: "alignStart" }}>
-          <ActionList>
-            <ActionListGroup {...getHoverConfig("one")}>
-              <ActionListItem>
-                <Button isDisabled={isDisabled} variant="control" onClick={toggleHidden}>
-                  {isHidden ? "Show" : "Hide"} Controls
-                </Button>
-              </ActionListItem>
-            </ActionListGroup>
-          </ActionList>
-        </ToolbarGroup>
+    <>
+      <Toolbar style={{ padding: 16 }}>
+        <ToolbarContent>
+          <ToolbarGroup align={{ default: "alignStart" }}>
+            <ActionList>
+              <ActionListGroup {...getHoverConfig("one")}>
+                <ActionListItem>
+                  <Button isDisabled={isDisabled} variant="control" onClick={toggleHidden}>
+                    {isHidden ? t("Show Controls") : t("Hide Controls")}
+                  </Button>
+                </ActionListItem>
+              </ActionListGroup>
+            </ActionList>
+          </ToolbarGroup>
 
-        <ToolbarGroup
-          align={{ default: "alignStart" }}
-          style={{ display: isHidden ? "none" : undefined }}
-        >
-          <ActionList>
-            <ActionListGroup {...getHoverConfig("two")}>
-              <ActionListItem style={{ display: "none" }}>
-                <Button isDisabled={isDisabled} variant="control" onClick={pageReset}>
-                  {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Reset")}
-                </Button>
-              </ActionListItem>
-              <ActionListItem>
-                <Button
-                  isDisabled={isDisabled}
-                  onClick={pageGoBack}
-                  icon={
-                    loadingAction === ControlActions.backward ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <ChevronLeftIcon />
-                    )
-                  }
-                  variant="control"
-                />
-              </ActionListItem>
-              <ActionListItem>
-                <Button
-                  isDisabled={isDisabled}
-                  onClick={pageGoForward}
-                  icon={
-                    loadingAction === ControlActions.forward ? (
-                      <Spinner size="sm" />
-                    ) : (
-                      <ChevronRightIcon />
-                    )
-                  }
-                  variant="control"
-                />
-              </ActionListItem>
-              <ActionListItem>
-                <Button
-                  isDisabled={isDisabled}
-                  onClick={pageReload}
-                  icon={
-                    loadingAction === ControlActions.reload ? <Spinner size="sm" /> : <UndoIcon />
-                  }
-                  variant="control"
-                />
-              </ActionListItem>
-            </ActionListGroup>
-          </ActionList>
-        </ToolbarGroup>
-        <ToolbarGroup
-          align={{ default: "alignEnd" }}
-          style={{ display: isHidden ? "none" : undefined }}
-        >
-          <ActionList>
-            <ActionListGroup {...getHoverConfig("three")}>
-              <ActionListItem>
-                <TextInput
-                  placeholder="http://myserver.svc.cluster.local:8080"
-                  style={{ width: "300px" }}
-                  ref={inputRef}
-                  id="browser-url-input"
-                  onKeyUp={onTextInputKeyUp}
-                  isDisabled={isDisabled}
-                />
-              </ActionListItem>
+          <ToolbarGroup
+            align={{ default: "alignStart" }}
+            style={{ display: isHidden ? "none" : undefined }}
+          >
+            <ActionList>
+              <ActionListGroup {...getHoverConfig("two")}>
+                <ActionListItem style={{ display: "none" }}>
+                  <Button isDisabled={isDisabled} variant="control" onClick={pageReset}>
+                    {loadingAction === ControlActions.reset ? <Spinner size="sm" /> : t("Reset")}
+                  </Button>
+                </ActionListItem>
+                <ActionListItem>
+                  <Tooltip content={t("Back")}>
+                    <Button
+                      aria-label={t("Back")}
+                      isDisabled={isDisabled}
+                      onClick={pageGoBack}
+                      icon={
+                        loadingAction === ControlActions.backward ? (
+                          <Spinner size="sm" />
+                        ) : (
+                          <ChevronLeftIcon />
+                        )
+                      }
+                      variant="control"
+                    />
+                  </Tooltip>
+                </ActionListItem>
+                <ActionListItem>
+                  <Tooltip content={t("Forward")}>
+                    <Button
+                      aria-label={t("Forward")}
+                      isDisabled={isDisabled}
+                      onClick={pageGoForward}
+                      icon={
+                        loadingAction === ControlActions.forward ? (
+                          <Spinner size="sm" />
+                        ) : (
+                          <ChevronRightIcon />
+                        )
+                      }
+                      variant="control"
+                    />
+                  </Tooltip>
+                </ActionListItem>
+                <ActionListItem>
+                  <Tooltip content={t("Reload")}>
+                    <Button
+                      aria-label={t("Reload")}
+                      isDisabled={isDisabled}
+                      onClick={pageReload}
+                      icon={
+                        loadingAction === ControlActions.reload ? (
+                          <Spinner size="sm" />
+                        ) : (
+                          <UndoIcon />
+                        )
+                      }
+                      variant="control"
+                    />
+                  </Tooltip>
+                </ActionListItem>
+              </ActionListGroup>
+            </ActionList>
+          </ToolbarGroup>
+          <ToolbarGroup
+            align={{ default: "alignEnd" }}
+            style={{ display: isHidden ? "none" : undefined }}
+          >
+            <ActionList>
+              <ActionListGroup {...getHoverConfig("three")}>
+                <ActionListItem>
+                  <TextInput
+                    placeholder="http://myserver.svc.cluster.local:8080"
+                    style={{ width: "300px" }}
+                    ref={inputRef}
+                    id="browser-url-input"
+                    aria-label={t("URL")}
+                    onKeyDown={onTextInputKeyDown}
+                    onFocus={() => setInputFocused(true)}
+                    onBlur={() => setInputFocused(false)}
+                    isDisabled={isDisabled}
+                  />
+                </ActionListItem>
 
-              <ActionListItem>
-                <Button isDisabled={isDisabled} variant="control" onClick={navigateToUrl}>
-                  {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Go")}
-                </Button>
-              </ActionListItem>
-            </ActionListGroup>
-          </ActionList>
-        </ToolbarGroup>
-      </ToolbarContent>
-    </Toolbar>
+                <ActionListItem>
+                  <Button isDisabled={isDisabled} variant="control" onClick={navigateToUrl}>
+                    {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Go")}
+                  </Button>
+                </ActionListItem>
+              </ActionListGroup>
+            </ActionList>
+          </ToolbarGroup>
+        </ToolbarContent>
+      </Toolbar>
+      {actionError && (
+        <Alert
+          isInline
+          variant="danger"
+          title={t("Browser action failed")}
+          actionClose={<AlertActionCloseButton onClose={() => setActionError(undefined)} />}
+          style={{ margin: "0 16px" }}
+        >
+          {actionError}
+        </Alert>
+      )}
+    </>
   );
 };
