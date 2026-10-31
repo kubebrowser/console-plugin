@@ -153,7 +153,7 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
               <ActionListGroup {...getHoverConfig("two")}>
                 <ActionListItem style={{ display: "none" }}>
                   <Button isDisabled={isDisabled} variant="control" onClick={pageReset}>
-                    {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Reset")}
+                    {loadingAction === ControlActions.reset ? <Spinner size="sm" /> : t("Reset")}
                   </Button>
                 </ActionListItem>
                 <ActionListItem>

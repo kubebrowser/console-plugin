@@ -62,7 +62,7 @@ export const BrowserSelector: React.FC<{
           <SelectOption key={itemId} itemId={itemId} isSelected={value === itemId}>
             <span>
               <BrowserIcon />
-              <span className="pf-v5-u-mx-xs" data-testid="browser-name">
+              <span className="pf-v6-u-mx-xs" data-testid="browser-name">
                 {itemId}
               </span>
               <BrowserStatusIndicator status={status} />
