@@ -46,7 +46,7 @@ export const NamespaceSelector: React.FC<{
           <SelectOption key={namespace} itemId={namespace} isSelected={value === namespace}>
             <span>
               <NamespaceIcon />
-              <span className="pf-v5-u-mx-xs" data-testid="namespace-name">
+              <span className="pf-v6-u-mx-xs" data-testid="namespace-name">
                 {namespace}
               </span>
             </span>
