@@ -33,6 +33,22 @@ function normalizeUrl(input: string): string {
   return SCHEME_PATTERN.test(input) ? input : `http://${input}`;
 }
 
+// consoleFetch errors only carry the HTTP status text; the browser API puts the
+// actual reason in the (plain text) response body.
+async function getErrorDetail(err: unknown): Promise<string | undefined> {
+  const { response, json } = err as { response?: Response; json?: { message?: string } };
+  if (json?.message) return json.message;
+  if (response && !response.bodyUsed) {
+    try {
+      const text = (await response.text()).trim();
+      if (text) return text;
+    } catch {
+      // Fall back to the error message below.
+    }
+  }
+  return (err as Error)?.message;
+}
+
 export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ browser }) => {
   const [loadingAction, setLoadingAction] = React.useState<string | undefined>();
   const [isHovered, setHovered] = React.useState<string | undefined>();
@@ -70,7 +86,7 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
       setActionError(undefined);
     } catch (err) {
       console.log(err);
-      setActionError((err as Error)?.message || t("An error occurred. Please try again."));
+      setActionError((await getErrorDetail(err)) || t("An error occurred. Please try again."));
     }
   }
 
@@ -241,15 +257,24 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
         </ToolbarContent>
       </Toolbar>
       {actionError && (
-        <Alert
-          isInline
-          variant="danger"
-          title={t("Browser action failed")}
-          actionClose={<AlertActionCloseButton onClose={() => setActionError(undefined)} />}
-          style={{ margin: "0 16px" }}
+        // The inline alert background is translucent and the toolbar floats over the VNC
+        // canvas, so back it with an opaque surface to keep the message readable.
+        <div
+          style={{
+            margin: "0 16px",
+            borderRadius: "var(--pf-t--global--border--radius--small)",
+            backgroundColor: "var(--pf-t--global--background--color--floating--default)"
+          }}
         >
-          {actionError}
-        </Alert>
+          <Alert
+            isInline
+            variant="danger"
+            title={t("Browser action failed")}
+            actionClose={<AlertActionCloseButton onClose={() => setActionError(undefined)} />}
+          >
+            {actionError}
+          </Alert>
+        </div>
       )}
     </>
   );
