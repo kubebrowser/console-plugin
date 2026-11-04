@@ -15,3 +15,8 @@ export const namespaceGVK: K8sGroupVersionKind = {
   version: "v1",
   kind: "Namespace"
 };
+export const serviceGVK: K8sGroupVersionKind = {
+  group: "core",
+  version: "v1",
+  kind: "Service"
+};
