@@ -23,8 +23,7 @@ import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 export const BrowserPanel: FC<{
   browser: K8sBrowser;
   onClose: () => void;
-  onBrowserDelete: () => void;
-}> = ({ browser, onClose, onBrowserDelete }) => {
+}> = ({ browser, onClose }) => {
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
 
   const { t } = usePluginTranslation();
@@ -35,8 +34,6 @@ export const BrowserPanel: FC<{
   ) => {
     setActiveTabKey(tabIndex);
   };
-
-  // function handleDelete() {}
 
   return (
     <DrawerPanelContent isResizable>
