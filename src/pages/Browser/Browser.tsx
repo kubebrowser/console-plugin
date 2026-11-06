@@ -7,9 +7,12 @@ import { BrowserControlToolbar } from "../../components/BrowserControlToolbar/Br
 import { BrowserPanel } from "../../components/BrowserPanel/BrowserPanel";
 import { BrowserToolbar } from "../../components/BrowserToolbar/BrowserToolbar";
 import { K8sBrowser } from "../../types/browser";
+import { ALL_NAMESPACES_KEY } from "../../utils/namespace";
 
 export default function Browser() {
-  const [currentNamespace, setCurrentNamespace] = useActiveNamespace();
+  const [activeNamespace, setCurrentNamespace] = useActiveNamespace();
+  // Browsers are picked per namespace, so "all namespaces" means none is selected yet.
+  const currentNamespace = activeNamespace === ALL_NAMESPACES_KEY ? "" : activeNamespace;
 
   const [browser, setBrowser] = useState<K8sBrowser | undefined>(undefined);
   const [detailsDrawerExpanded, setDetailsDrawerExpanded] = useState(false);
