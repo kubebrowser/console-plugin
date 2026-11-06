@@ -1,6 +1,7 @@
 import * as React from "react";
 import useSelectToggle from "../../hooks/useSelectToggle";
 import {
+  Alert,
   MenuSearch,
   MenuSearchInput,
   SearchInput,
@@ -33,7 +34,7 @@ export const BrowserSelector: React.FC<{
   const [input, setInput] = React.useState("");
 
   const { isOpen, toggleSelect } = useSelectToggle();
-  const { browsers, isLoading: browsersLoading } = useBrowsers(namespace); // handle error
+  const { browsers, isLoading: browsersLoading, loadError } = useBrowsers(namespace);
   const launchModal = useModal();
 
   const { t } = usePluginTranslation();
@@ -108,7 +109,12 @@ export const BrowserSelector: React.FC<{
         </FlexItem>
         <FlexItem spacer={{ default: "spacerSm" }}>
           <span style={{ position: "relative", top: "1px", opacity: !value ? "0.5" : undefined }}>
-            {value || (browsersLoading ? t("Loading Browsers") : t("Select Browser"))}
+            {value ||
+              (browsersLoading
+                ? t("Loading Browsers")
+                : loadError
+                  ? t("Couldn't load Browsers")
+                  : t("Select Browser"))}
           </span>
         </FlexItem>
         {value && (
@@ -144,6 +150,20 @@ export const BrowserSelector: React.FC<{
           />
         </MenuSearchInput>
       </MenuSearch>
+      {loadError && (
+        // Kubernetes messages are long, so wrap them instead of widening the menu.
+        <div
+          style={{
+            maxWidth: "275px",
+            overflowWrap: "anywhere",
+            padding: "0 var(--pf-t--global--spacer--md)"
+          }}
+        >
+          <Alert isInline isPlain variant="danger" title={t("Couldn't load Browsers")}>
+            {loadError.message}
+          </Alert>
+        </div>
+      )}
       <SelectList>{filteredDeploymentSelectMenuItems}</SelectList>
       <MenuFooter>
         <Button variant="secondary" onClick={launchCreateBrowser}>
