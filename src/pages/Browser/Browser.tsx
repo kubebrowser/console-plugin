@@ -54,19 +54,10 @@ export default function Browser() {
               !!browser ? <BrowserPanel browser={browser} onClose={onDetailsDrawerClose} /> : <></>
             }
           >
-            <DrawerContentBody>
-              <BrowserContent browser={browser} />
-              <div
-                style={{
-                  padding: 0,
-                  display: !browser ? "none" : undefined,
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0
-                }}
-              >
-                <BrowserControlToolbar browser={browser} />
+            <DrawerContentBody style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+              {browser && <BrowserControlToolbar browser={browser} />}
+              <div style={{ flex: 1, minHeight: 0 }}>
+                <BrowserContent browser={browser} />
               </div>
             </DrawerContentBody>
           </DrawerContent>

@@ -1,281 +1,59 @@
-import {
-  Toolbar,
-  ToolbarContent,
-  ToolbarGroup,
-  ActionList,
-  ActionListGroup,
-  ActionListItem,
-  Alert,
-  AlertActionCloseButton,
-  Button,
-  TextInput,
-  Spinner,
-  Tooltip
-} from "@patternfly/react-core";
-import { ChevronLeftIcon, ChevronRightIcon, UndoIcon } from "@patternfly/react-icons";
+import { Flex, FlexItem } from "@patternfly/react-core";
+import { ArrowLeftIcon, ArrowRightIcon, RedoIcon } from "@patternfly/react-icons";
 import * as React from "react";
 import { K8sBrowser } from "../../types/browser";
-import { consoleFetch } from "@openshift-console/dynamic-plugin-sdk";
+import { ControlActions, useBrowserAction } from "../../hooks/useBrowserAction";
 import { usePluginTranslation } from "../../hooks/usePluginTranslation";
-
-enum ControlActions {
-  navigate = "page-navigate",
-  backward = "page-goback",
-  forward = "page-goforward",
-  reload = "page-reload",
-  reset = "page-reset"
-}
-
-const SCHEME_PATTERN = /^[a-z][a-z0-9+.-]*:\/\//i;
-
-// Mirror browser address bars: assume http:// when no scheme is typed.
-function normalizeUrl(input: string): string {
-  return SCHEME_PATTERN.test(input) ? input : `http://${input}`;
-}
-
-// consoleFetch errors only carry the HTTP status text; the browser API puts the
-// actual reason in the (plain text) response body.
-async function getErrorDetail(err: unknown): Promise<string | undefined> {
-  const { response, json } = err as { response?: Response; json?: { message?: string } };
-  if (json?.message) return json.message;
-  if (response && !response.bodyUsed) {
-    try {
-      const text = (await response.text()).trim();
-      if (text) return text;
-    } catch {
-      // Fall back to the error message below.
-    }
-  }
-  return (err as Error)?.message;
-}
+import { AddressField } from "../AddressField/AddressField";
+import { ActionErrorToast } from "./ActionErrorToast";
+import { NavButton } from "./NavButton";
 
 export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ browser }) => {
-  const [loadingAction, setLoadingAction] = React.useState<string | undefined>();
-  const [isHovered, setHovered] = React.useState<string | undefined>();
-  const [isHidden, setHidden] = React.useState(false);
-  const [isInputFocused, setInputFocused] = React.useState(false);
-  const [actionError, setActionError] = React.useState<string | undefined>();
-  const isDisabled = !browser || browser.status?.deploymentStatus !== "Ready" || !!loadingAction;
-  const inputRef = React.useRef<HTMLInputElement>(null);
-
   const { t } = usePluginTranslation();
+  const { loadingAction, actionError, clearActionError, runAction } = useBrowserAction(browser);
+  const isReady = browser?.status?.deploymentStatus === "Ready";
+  const isDisabled = !isReady || !!loadingAction;
 
-  function onMouseEnterSubject(name: string) {
-    setHovered(name);
-  }
-
-  function onMouseLeaveSubject() {
-    setHovered(undefined);
-  }
-
-  function toggleHidden() {
-    setHidden(!isHidden);
-  }
-
-  async function sendAction(args: { kind: string; url?: string }) {
-    try {
-      const url = `/api/kubernetes/apis/subresource.kubebrowser.io/v1alpha1/namespaces/${browser?.metadata.namespace}/browsers/${browser?.metadata.name}/action`;
-      const response = await consoleFetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(args)
-      });
-      console.log(response);
-      setActionError(undefined);
-    } catch (err) {
-      console.log(err);
-      setActionError((await getErrorDetail(err)) || t("An error occurred. Please try again."));
-    }
-  }
-
-  async function pageGoBack() {
-    if (loadingAction) return;
-    setLoadingAction(ControlActions.backward);
-    await sendAction({ kind: ControlActions.backward });
-    setLoadingAction(undefined);
-  }
-
-  async function pageGoForward() {
-    if (loadingAction) return;
-    setLoadingAction(ControlActions.forward);
-    await sendAction({ kind: ControlActions.forward });
-    setLoadingAction(undefined);
-  }
-
-  async function pageReload() {
-    if (loadingAction) return;
-    setLoadingAction(ControlActions.reload);
-    await sendAction({ kind: ControlActions.reload });
-    setLoadingAction(undefined);
-  }
-
-  async function navigateToUrl() {
-    if (loadingAction) return;
-    const input = inputRef.current?.value.trim();
-    if (!input) return;
-    setLoadingAction(ControlActions.navigate);
-    await sendAction({ kind: ControlActions.navigate, url: normalizeUrl(input) });
-    setLoadingAction(undefined);
-  }
-
-  async function pageReset() {
-    if (loadingAction) return;
-    setLoadingAction(ControlActions.reset);
-    await sendAction({ kind: ControlActions.reset });
-    setLoadingAction(undefined);
-  }
-
-  function onTextInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      navigateToUrl();
-    }
-  }
-
-  function getHoverConfig(name: string) {
-    return {
-      style: {
-        opacity:
-          isDisabled || isHovered === name || (name === "three" && isInputFocused) ? 1 : "0.6",
-        transition: "opacity 200ms linear"
-      },
-      onMouseEnter: () => onMouseEnterSubject(name),
-      onMouseLeave: () => onMouseLeaveSubject()
-    };
-  }
+  const navButtons: [ControlActions, string, React.ReactNode][] = [
+    [ControlActions.backward, t("Back"), <ArrowLeftIcon />],
+    [ControlActions.forward, t("Forward"), <ArrowRightIcon />],
+    [ControlActions.reload, t("Reload"), <RedoIcon />]
+  ];
 
   return (
     <>
-      <Toolbar style={{ padding: 16 }}>
-        <ToolbarContent>
-          <ToolbarGroup align={{ default: "alignStart" }}>
-            <ActionList>
-              <ActionListGroup {...getHoverConfig("one")}>
-                <ActionListItem>
-                  <Button isDisabled={isDisabled} variant="control" onClick={toggleHidden}>
-                    {isHidden ? t("Show Controls") : t("Hide Controls")}
-                  </Button>
-                </ActionListItem>
-              </ActionListGroup>
-            </ActionList>
-          </ToolbarGroup>
-
-          <ToolbarGroup
-            align={{ default: "alignStart" }}
-            style={{ display: isHidden ? "none" : undefined }}
-          >
-            <ActionList>
-              <ActionListGroup {...getHoverConfig("two")}>
-                <ActionListItem style={{ display: "none" }}>
-                  <Button isDisabled={isDisabled} variant="control" onClick={pageReset}>
-                    {loadingAction === ControlActions.reset ? <Spinner size="sm" /> : t("Reset")}
-                  </Button>
-                </ActionListItem>
-                <ActionListItem>
-                  <Tooltip content={t("Back")}>
-                    <Button
-                      aria-label={t("Back")}
-                      isDisabled={isDisabled}
-                      onClick={pageGoBack}
-                      icon={
-                        loadingAction === ControlActions.backward ? (
-                          <Spinner size="sm" />
-                        ) : (
-                          <ChevronLeftIcon />
-                        )
-                      }
-                      variant="control"
-                    />
-                  </Tooltip>
-                </ActionListItem>
-                <ActionListItem>
-                  <Tooltip content={t("Forward")}>
-                    <Button
-                      aria-label={t("Forward")}
-                      isDisabled={isDisabled}
-                      onClick={pageGoForward}
-                      icon={
-                        loadingAction === ControlActions.forward ? (
-                          <Spinner size="sm" />
-                        ) : (
-                          <ChevronRightIcon />
-                        )
-                      }
-                      variant="control"
-                    />
-                  </Tooltip>
-                </ActionListItem>
-                <ActionListItem>
-                  <Tooltip content={t("Reload")}>
-                    <Button
-                      aria-label={t("Reload")}
-                      isDisabled={isDisabled}
-                      onClick={pageReload}
-                      icon={
-                        loadingAction === ControlActions.reload ? (
-                          <Spinner size="sm" />
-                        ) : (
-                          <UndoIcon />
-                        )
-                      }
-                      variant="control"
-                    />
-                  </Tooltip>
-                </ActionListItem>
-              </ActionListGroup>
-            </ActionList>
-          </ToolbarGroup>
-          <ToolbarGroup
-            align={{ default: "alignEnd" }}
-            style={{ display: isHidden ? "none" : undefined }}
-          >
-            <ActionList>
-              <ActionListGroup {...getHoverConfig("three")}>
-                <ActionListItem>
-                  <TextInput
-                    placeholder="http://myserver.svc.cluster.local:8080"
-                    style={{ width: "300px" }}
-                    ref={inputRef}
-                    id="browser-url-input"
-                    aria-label={t("URL")}
-                    onKeyDown={onTextInputKeyDown}
-                    onFocus={() => setInputFocused(true)}
-                    onBlur={() => setInputFocused(false)}
-                    isDisabled={isDisabled}
-                  />
-                </ActionListItem>
-
-                <ActionListItem>
-                  <Button isDisabled={isDisabled} variant="control" onClick={navigateToUrl}>
-                    {loadingAction === ControlActions.navigate ? <Spinner size="sm" /> : t("Go")}
-                  </Button>
-                </ActionListItem>
-              </ActionListGroup>
-            </ActionList>
-          </ToolbarGroup>
-        </ToolbarContent>
-      </Toolbar>
-      {actionError && (
-        // The inline alert background is translucent and the toolbar floats over the VNC
-        // canvas, so back it with an opaque surface to keep the message readable.
-        <div
-          style={{
-            margin: "0 16px",
-            borderRadius: "var(--pf-t--global--border--radius--small)",
-            backgroundColor: "var(--pf-t--global--background--color--floating--default)"
-          }}
-        >
-          <Alert
-            isInline
-            variant="danger"
-            title={t("Browser action failed")}
-            actionClose={<AlertActionCloseButton onClose={() => setActionError(undefined)} />}
-          >
-            {actionError}
-          </Alert>
-        </div>
-      )}
+      <Flex
+        alignItems={{ default: "alignItemsCenter" }}
+        flexWrap={{ default: "nowrap" }}
+        spaceItems={{ default: "spaceItemsXs" }}
+        style={{ padding: "var(--pf-t--global--spacer--xs) var(--pf-t--global--spacer--sm)" }}
+      >
+        {navButtons.map(([kind, label, icon]) => (
+          <FlexItem key={kind}>
+            <NavButton
+              label={label}
+              icon={icon}
+              isDisabled={isDisabled}
+              isLoading={loadingAction === kind}
+              onClick={() => runAction(kind)}
+            />
+          </FlexItem>
+        ))}
+        <FlexItem grow={{ default: "grow" }}>
+          <AddressField
+            browserNamespace={browser?.metadata.namespace}
+            placeholder={
+              browser && !isReady
+                ? t("Waiting for the browser to be ready…")
+                : t("Search Services or enter a URL")
+            }
+            isDisabled={isDisabled}
+            isNavigating={loadingAction === ControlActions.navigate}
+            onNavigate={(url) => runAction(ControlActions.navigate, url)}
+          />
+        </FlexItem>
+      </Flex>
+      <ActionErrorToast error={actionError} onClose={clearActionError} />
     </>
   );
 };
