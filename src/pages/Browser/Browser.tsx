@@ -25,8 +25,6 @@ export default function Browser() {
     setBrowser(newBrowser);
   }
 
-  function onBrowserDelete() {}
-
   function toggleBrowserDrawer() {
     setDetailsDrawerExpanded(!detailsDrawerExpanded);
   }
@@ -50,15 +48,7 @@ export default function Browser() {
         <Drawer isExpanded={!!browser && detailsDrawerExpanded}>
           <DrawerContent
             panelContent={
-              !!browser ? (
-                <BrowserPanel
-                  browser={browser}
-                  onClose={onDetailsDrawerClose}
-                  onBrowserDelete={onBrowserDelete}
-                />
-              ) : (
-                <></>
-              )
+              !!browser ? <BrowserPanel browser={browser} onClose={onDetailsDrawerClose} /> : <></>
             }
           >
             <DrawerContentBody style={{ display: "flex", flexDirection: "column", height: "100%" }}>
