@@ -10,7 +10,6 @@ import {
 } from "@patternfly/react-core";
 import { usePluginTranslation } from "../../hooks/usePluginTranslation";
 import { useServiceSuggestions } from "../../hooks/useServiceSuggestions";
-import { SuggestionMenu } from "./SuggestionMenu";
 import {
   ALL_NAMESPACES_ROW,
   MENU_ID,
@@ -18,9 +17,10 @@ import {
   SEARCH_ALL_ROW,
   TYPED_URL_ROW,
   buildSuggestionView,
-  normalizeUrl,
   optionId
-} from "./suggestionView";
+} from "../../utils/suggestionView";
+import { normalizeUrl } from "../../utils/url";
+import { SuggestionMenu } from "../SuggestionMenu/SuggestionMenu";
 
 // The URL field, with a menu of Services to open while it has focus.
 export const AddressField: React.FC<{

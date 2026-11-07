@@ -1,25 +1,23 @@
 import * as React from "react";
-import { Divider, SelectGroup, SelectList, SelectOption } from "@patternfly/react-core";
+import { Divider, SelectList, SelectOption } from "@patternfly/react-core";
 import { usePluginTranslation } from "../../hooks/usePluginTranslation";
-import { ServiceSuggestion } from "../../hooks/useServiceSuggestions";
-import {
-  LoadError,
-  LoadingRows,
-  NamespaceOption,
-  ScopeBreadcrumb,
-  ServiceOption
-} from "./SuggestionRows";
 import {
   ALL_NAMESPACES_ROW,
   MAX_ROWS,
-  NAMESPACE_ROW_PREFIX,
   SEARCH_ALL_ROW,
   SuggestionView,
   TYPED_URL_ROW,
-  normalizeUrl,
   optionId
-} from "./suggestionView";
+} from "../../utils/suggestionView";
+import { normalizeUrl } from "../../utils/url";
+import { NamespaceList } from "./NamespaceList";
+import { ScopeBreadcrumb } from "./ScopeBreadcrumb";
+import { ServiceList } from "./ServiceList";
+import { SuggestionsLoadError } from "./SuggestionsLoadError";
+import { SuggestionsLoading } from "./SuggestionsLoading";
 
+// The body of the address bar's menu: the typed URL, the scope breadcrumb, then
+// namespaces and Services (or their loading and error states).
 export const SuggestionMenu: React.FC<{
   view: SuggestionView;
   browserNamespace?: string;
@@ -33,47 +31,6 @@ export const SuggestionMenu: React.FC<{
   const isAllNamespaces = !namespace;
   const showNamespaceList = isAllNamespaces && !query;
   const isEmpty = !showNamespaceList && !view.services.length && !view.namespaces.length;
-
-  function renderNamespaces() {
-    if (!view.namespaces.length) return null;
-    const list = (
-      <SelectList>
-        {view.namespaces.map((ns) => (
-          <NamespaceOption
-            key={ns.name}
-            namespace={ns}
-            isBrowserNamespace={ns.name === browserNamespace}
-            isFocused={focusedValue === NAMESPACE_ROW_PREFIX + ns.name}
-          />
-        ))}
-      </SelectList>
-    );
-    // While searching, namespaces are one group among the Service results.
-    return query ? <SelectGroup label={t("Namespaces")}>{list}</SelectGroup> : list;
-  }
-
-  function renderServices() {
-    const groups = view.services.reduce<Record<string, ServiceSuggestion[]>>((acc, s) => {
-      (acc[s.namespace] ||= []).push(s);
-      return acc;
-    }, {});
-    return Object.entries(groups).map(([ns, items], i) => {
-      const list = (
-        <SelectList>
-          {items.map((s) => (
-            <ServiceOption key={s.id} service={s} isFocused={focusedValue === s.id} />
-          ))}
-        </SelectList>
-      );
-      return (
-        <React.Fragment key={ns}>
-          {(i > 0 || view.namespaces.length > 0) && <Divider />}
-          {/* A single namespace is already named in the breadcrumb. */}
-          {isAllNamespaces ? <SelectGroup label={ns}>{list}</SelectGroup> : list}
-        </React.Fragment>
-      );
-    });
-  }
 
   return (
     <>
@@ -99,13 +56,23 @@ export const SuggestionMenu: React.FC<{
         onGoUp={() => onPick(ALL_NAMESPACES_ROW)}
       />
       {loadError ? (
-        <LoadError error={loadError} namespace={namespace} />
+        <SuggestionsLoadError error={loadError} namespace={namespace} />
       ) : !loaded ? (
-        <LoadingRows />
+        <SuggestionsLoading />
       ) : (
         <>
-          {renderNamespaces()}
-          {renderServices()}
+          <NamespaceList
+            namespaces={view.namespaces}
+            browserNamespace={browserNamespace}
+            isGrouped={!!query}
+            focusedValue={focusedValue}
+          />
+          <ServiceList
+            services={view.services}
+            showNamespaceLabels={isAllNamespaces}
+            hasContentAbove={view.namespaces.length > 0}
+            focusedValue={focusedValue}
+          />
           {isEmpty && (
             <SelectList>
               <SelectOption isDisabled value="__empty__">
