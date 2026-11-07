@@ -15,6 +15,7 @@
   "Click Connect to open the VNC console.": "Click Connect to open the VNC console.",
   "Connect": "Connect",
   "Copy to clipboard": "Copy to clipboard",
+  "Couldn't load Browsers": "Couldn't load Browsers",
   "Couldn't load Services": "Couldn't load Services",
   "Create": "Create",
   "Create a browser deployment in your selected namespace.": "Create a browser deployment in your selected namespace.",
