@@ -19,17 +19,6 @@ const extensions: EncodedExtension[] = [
       section: "networking",
       insertAfter: ["udns", "networkattachmentdefinitions", "networkPolicies"]
     }
-  },
-  {
-    type: "console.navigation/href",
-    properties: {
-      id: "browsers-dev",
-      name: "%plugin__kubebrowser-plugin~Web Browsers%",
-      href: "/browsers",
-      perspective: "dev",
-      insertAfter: "topology",
-      section: "top"
-    }
   }
 ];
 
