@@ -137,7 +137,8 @@ export const BrowserSelector: React.FC<{
       onOpenChange={(isOpen) => toggleSelect(isOpen)}
       toggle={toggle}
       shouldFocusToggleOnSelect
-      isScrollable
+      // The error message is tall enough to push the footer past the scroll limit.
+      isScrollable={!loadError}
     >
       <MenuSearch>
         <MenuSearchInput>
@@ -164,7 +165,7 @@ export const BrowserSelector: React.FC<{
           </Alert>
         </div>
       )}
-      <SelectList>{filteredDeploymentSelectMenuItems}</SelectList>
+      {!loadError && <SelectList>{filteredDeploymentSelectMenuItems}</SelectList>}
       <MenuFooter>
         <Button variant="secondary" onClick={launchCreateBrowser}>
           {t("New Browser")}
