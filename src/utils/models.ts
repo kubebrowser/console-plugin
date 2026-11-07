@@ -37,6 +37,7 @@ export const BrowserModel: K8sModel = {
   labelKey: "plugin__kubebrowser-plugin~Browser",
   plural: "browsers",
   abbr: "BR",
+  namespaced: true,
   kind: "Browser",
   id: "browser",
   labelPlural: "Browsers",
