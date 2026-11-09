@@ -3,7 +3,9 @@ import { ArrowLeftIcon, ArrowRightIcon, RedoIcon } from "@patternfly/react-icons
 import * as React from "react";
 import { K8sBrowser } from "../../types/browser";
 import { ControlActions, useBrowserAction } from "../../hooks/useBrowserAction";
+import { useBrowserState } from "../../hooks/useBrowserState";
 import { usePluginTranslation } from "../../hooks/usePluginTranslation";
+import { addressBarUrl } from "../../utils/url";
 import { AddressField } from "../AddressField/AddressField";
 import { ActionErrorToast } from "./ActionErrorToast";
 import { NavButton } from "./NavButton";
@@ -12,6 +14,7 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
   const { t } = usePluginTranslation();
   const { loadingAction, actionError, clearActionError, runAction } = useBrowserAction(browser);
   const isReady = browser?.status?.deploymentStatus === "Ready";
+  const pageState = useBrowserState(browser);
   const isDisabled = !isReady || !!loadingAction;
 
   const navButtons: [ControlActions, string, React.ReactNode][] = [
@@ -42,6 +45,7 @@ export const BrowserControlToolbar: React.FC<{ browser?: K8sBrowser }> = ({ brow
         <FlexItem grow={{ default: "grow" }}>
           <AddressField
             browserNamespace={browser?.metadata.namespace}
+            currentUrl={pageState && addressBarUrl(pageState.url)}
             placeholder={
               browser && !isReady
                 ? t("Waiting for the browser to be ready…")

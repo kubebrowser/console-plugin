@@ -25,11 +25,13 @@ import { SuggestionMenu } from "../SuggestionMenu/SuggestionMenu";
 // The URL field, with a menu of Services to open while it has focus.
 export const AddressField: React.FC<{
   browserNamespace?: string;
+  // The remote page's URL; shown whenever it changes while the field isn't focused.
+  currentUrl?: string;
   placeholder: string;
   isDisabled: boolean;
   isNavigating: boolean;
   onNavigate: (url: string) => void;
-}> = ({ browserNamespace, placeholder, isDisabled, isNavigating, onNavigate }) => {
+}> = ({ browserNamespace, currentUrl, placeholder, isDisabled, isNavigating, onNavigate }) => {
   const { t } = usePluginTranslation();
   const [urlInput, setUrlInput] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
@@ -41,6 +43,13 @@ export const AddressField: React.FC<{
   const [viewNamespace, setViewNamespace] = React.useState<string | undefined>(browserNamespace);
   React.useEffect(() => setViewNamespace(browserNamespace), [browserNamespace]);
   const services = useServiceSuggestions(viewNamespace, browserNamespace);
+
+  // Don't replace what the user is typing.
+  React.useEffect(() => {
+    if (currentUrl === undefined || document.activeElement === inputRef.current) return;
+    setUrlInput(currentUrl);
+    setIsFiltering(false);
+  }, [currentUrl]);
 
   const query = isFiltering ? urlInput.trim() : "";
   const view = React.useMemo(
